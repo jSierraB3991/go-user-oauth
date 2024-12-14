@@ -30,7 +30,7 @@ func (repo *Repository) GetUserByEmail(userEmail string) (*gooauthmodel.User, er
 
 func (repo *Repository) GetUserById(userId uint) (*gooauthmodel.User, error) {
 	var result gooauthmodel.User
-	err := repo.db.Find(&result, userId).Error
+	err := repo.db.Preload("Role").Find(&result, userId).Error
 	if err != nil {
 		return nil, err
 	}
@@ -38,4 +38,13 @@ func (repo *Repository) GetUserById(userId uint) (*gooauthmodel.User, error) {
 		return nil, gooautherror.InvalidUserOrPassword{}
 	}
 	return &result, nil
+}
+
+func (repo *Repository) GetAttributtesByUserId(userId uint) ([]gooauthmodel.UserAttributtes, error) {
+	var result []gooauthmodel.UserAttributtes
+	err := repo.db.Where("user_id = ?", userId).Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }
