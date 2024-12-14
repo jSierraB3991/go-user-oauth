@@ -10,10 +10,9 @@ func (repo *Repository) SaveUser(user *gooauthmodel.User) error {
 }
 
 func (repo *Repository) SaveAttributtes(userId uint, attr []gooauthmodel.UserAttributtes) error {
-	for i, _ := range attr {
+	for i := range attr {
 		attr[i].UserId = userId
 	}
-
 	return repo.db.Save(&attr).Error
 }
 
