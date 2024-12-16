@@ -2,24 +2,24 @@ package gooauthmodel
 
 import "gorm.io/gorm"
 
-type Role struct {
+type GoUserRole struct {
 	gorm.Model
 	RoleId   uint   `gorm:"column:id"`
 	RoleName string `gorm:"column:role_name;not null"`
 }
 
-type RolePath struct {
+type GoUserRolePath struct {
 	gorm.Model
 	RolePathId uint `gorm:"column:id"`
 
 	RoleId uint `gorm:"column:role_id;not null"`
-	Role   Role
+	Role   GoUserRole
 
 	PathBackId uint `gorm:"column:path_back_id;not null"`
-	PathBack   PathBack
+	PathBack   GoUserPathBack
 }
 
-type PathBack struct {
+type GoUserPathBack struct {
 	gorm.Model
 	PathBackId     uint   `gorm:"column:id"`
 	PathRoute      string `gorm:"column:path_route;not null"`

@@ -5,19 +5,19 @@ import (
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 )
 
-func (repo *Repository) SaveUser(user *gooauthmodel.User) error {
+func (repo *Repository) SaveUser(user *gooauthmodel.GoUserUser) error {
 	return repo.db.Save(&user).Error
 }
 
-func (repo *Repository) SaveAttributtes(userId uint, attr []gooauthmodel.UserAttributtes) error {
+func (repo *Repository) SaveAttributtes(userId uint, attr []gooauthmodel.GoUserUserAttributtes) error {
 	for i := range attr {
 		attr[i].UserId = userId
 	}
 	return repo.db.Save(&attr).Error
 }
 
-func (repo *Repository) GetUserByEmail(userEmail string) (*gooauthmodel.User, error) {
-	var result gooauthmodel.User
+func (repo *Repository) GetUserByEmail(userEmail string) (*gooauthmodel.GoUserUser, error) {
+	var result gooauthmodel.GoUserUser
 	err := repo.db.Where("email = ?", userEmail).Find(&result).Error
 	if err != nil {
 		return nil, err
@@ -28,9 +28,9 @@ func (repo *Repository) GetUserByEmail(userEmail string) (*gooauthmodel.User, er
 	return &result, nil
 }
 
-func (repo *Repository) GetUserById(userId uint) (*gooauthmodel.User, error) {
-	var result gooauthmodel.User
-	err := repo.db.Find(&result, userId).Error
+func (repo *Repository) GetUserById(userId uint) (*gooauthmodel.GoUserUser, error) {
+	var result gooauthmodel.GoUserUser
+	err := repo.db.Preload("Role").Find(&result, userId).Error
 	if err != nil {
 		return nil, err
 	}
@@ -38,4 +38,13 @@ func (repo *Repository) GetUserById(userId uint) (*gooauthmodel.User, error) {
 		return nil, gooautherror.InvalidUserOrPassword{}
 	}
 	return &result, nil
+}
+
+func (repo *Repository) GetAttributtesByUserId(userId uint) ([]gooauthmodel.GoUserUserAttributtes, error) {
+	var result []gooauthmodel.GoUserUserAttributtes
+	err := repo.db.Where("user_id = ?", userId).Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }

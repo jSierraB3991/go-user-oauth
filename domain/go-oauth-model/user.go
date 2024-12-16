@@ -2,7 +2,7 @@ package gooauthmodel
 
 import "gorm.io/gorm"
 
-type User struct {
+type GoUserUser struct {
 	gorm.Model
 	UserId   uint   `gorm:"column:id"`
 	Email    string `gorm:"column:email;not null"`
@@ -12,26 +12,26 @@ type User struct {
 	Password string `gorm:"column:password;not null"`
 
 	RoleId uint `gorm:"column:role_id;not null"`
-	Role   Role
+	Role   GoUserRole
 
 	CodeValidateEmail    *string `gorm:"column:code_validate_email"`
 	CodeRemenberPassword *string `gorm:"column:code_remenber_password"`
 }
 
-type UserAttributtes struct {
+type GoUserUserAttributtes struct {
 	gorm.Model
 	UserAttributteId uint `gorm:"column:id"`
 	UserId           uint `gorm:"column:user_id;not null"`
-	User             User
+	User             GoUserUser
 	NameAttributte   string `gorm:"column:name_attributte;not null"`
 	ValueAttributtes string `gorm:"column:vale_attributte;not null"`
 }
 
-type UserPath struct {
+type GoUserUserPath struct {
 	gorm.Model
 	UserPathId uint `gorm:"column:id"`
 	UserId     uint `gorm:"column:user_id;not null"`
-	User       User
+	User       GoUserUser
 	PathBackId uint `gorm:"column:path_back_id;not null"`
-	PathBack   PathBack
+	PathBack   GoUserPathBack
 }

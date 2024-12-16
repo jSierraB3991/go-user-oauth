@@ -6,8 +6,8 @@ import (
 	gooauthlibs "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_libs"
 )
 
-func (repo *Repository) GetRoleByName(roleName string) (*gooauthmodel.Role, error) {
-	var result gooauthmodel.Role
+func (repo *Repository) GetRoleByName(roleName string) (*gooauthmodel.GoUserRole, error) {
+	var result gooauthmodel.GoUserRole
 	err := repo.db.Where("role_name = ?", roleName).Find(&result).Error
 	if err != nil {
 		return nil, err
@@ -19,17 +19,17 @@ func (repo *Repository) GetRoleByName(roleName string) (*gooauthmodel.Role, erro
 }
 
 func (repo *Repository) MigrateO1() error {
-	err := repo.db.Save(&gooauthmodel.Role{RoleName: gooauthlibs.ROLE_USER}).Error
+	err := repo.db.Save(&gooauthmodel.GoUserRole{RoleName: gooauthlibs.ROLE_USER}).Error
 	if err != nil {
 		return err
 	}
-	return repo.db.Save(&gooauthmodel.Role{RoleName: gooauthlibs.ROLE_ADMIN}).Error
+	return repo.db.Save(&gooauthmodel.GoUserRole{RoleName: gooauthlibs.ROLE_ADMIN}).Error
 }
 
 func (repo *Repository) GetRolesByUserAndRole(userId, roleId uint) ([]string, error) {
 	var result []string
 
-	var rolePath []gooauthmodel.RolePath
+	var rolePath []gooauthmodel.GoUserRolePath
 	err := repo.db.Where("role_id = ?", roleId).Preload("PathBack").Find(&rolePath).Error
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func (repo *Repository) GetRolesByUserAndRole(userId, roleId uint) ([]string, er
 		result = append(result, v.PathBack.PathRoute)
 	}
 
-	var userPath []gooauthmodel.UserPath
+	var userPath []gooauthmodel.GoUserUserPath
 	err = repo.db.Where("user_id = ?", userId).Preload("PathBack").Find(&userPath).Error
 
 	for _, v := range userPath {

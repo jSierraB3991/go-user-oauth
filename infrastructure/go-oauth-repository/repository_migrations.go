@@ -16,7 +16,7 @@ func (repo *Repository) RunMigrations() error {
 }
 
 func (repo *Repository) ValidateMigrate(version string) (bool, error) {
-	var result gooauthmodel.Migration
+	var result gooauthmodel.GoUserUserMigration
 	err := repo.db.Where("migrate_version = ?", version).Find(&result).Error
 	if err != nil {
 		return true, err
@@ -29,7 +29,7 @@ func (repo *Repository) ValidateMigrate(version string) (bool, error) {
 }
 
 func (repo *Repository) SaveVersion(version string) error {
-	return repo.db.Save(&gooauthmodel.Migration{DateCreate: time.Now(), MigrationVersion: version}).Error
+	return repo.db.Save(&gooauthmodel.GoUserUserMigration{DateCreate: time.Now(), MigrationVersion: version}).Error
 }
 
 func (repo *Repository) RunMigrate(version string, migration func() error) error {
@@ -53,12 +53,12 @@ func (repo *Repository) RunMigrate(version string, migration func() error) error
 
 func (repo *Repository) Migrate00() error {
 	return repo.db.AutoMigrate(
-		&gooauthmodel.Migration{},
-		&gooauthmodel.PathBack{},
-		&gooauthmodel.Role{},
-		&gooauthmodel.RolePath{},
-		&gooauthmodel.User{},
-		&gooauthmodel.UserAttributtes{},
-		&gooauthmodel.UserPath{},
+		&gooauthmodel.GoUserUserMigration{},
+		&gooauthmodel.GoUserPathBack{},
+		&gooauthmodel.GoUserRole{},
+		&gooauthmodel.GoUserRolePath{},
+		&gooauthmodel.GoUserUser{},
+		&gooauthmodel.GoUserUserAttributtes{},
+		&gooauthmodel.GoUserUserPath{},
 	)
 }
