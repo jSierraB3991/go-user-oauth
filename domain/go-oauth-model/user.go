@@ -11,8 +11,8 @@ type GoUserUser struct {
 	Enabled  bool   `gorm:"column:enabled;not null"`
 	Password string `gorm:"column:password;not null"`
 
-	RoleId uint `gorm:"column:role_id;not null"`
-	Role   GoUserRole
+	GoUserRoleId uint `gorm:"column:role_id;not null"`
+	GoUserRole   GoUserRole
 
 	CodeValidateEmail    *string `gorm:"column:code_validate_email"`
 	CodeRemenberPassword *string `gorm:"column:code_remenber_password"`
@@ -21,17 +21,17 @@ type GoUserUser struct {
 type GoUserUserAttributtes struct {
 	gorm.Model
 	UserAttributteId uint `gorm:"column:id"`
-	UserId           uint `gorm:"column:user_id;not null"`
-	User             GoUserUser
+	GoUserUserId     uint `gorm:"column:user_id;not null"`
+	GoUserUser       GoUserUser
 	NameAttributte   string `gorm:"column:name_attributte;not null"`
 	ValueAttributtes string `gorm:"column:vale_attributte;not null"`
 }
 
 type GoUserUserPath struct {
 	gorm.Model
-	UserPathId uint `gorm:"column:id"`
-	UserId     uint `gorm:"column:user_id;not null"`
-	User       GoUserUser
-	PathBackId uint `gorm:"column:path_back_id;not null"`
-	PathBack   GoUserPathBack
+	UserPathId       uint `gorm:"column:id"`
+	GoUserUserId     uint `gorm:"column:user_id;not null"`
+	GoUserUser       GoUserUser
+	GoUserPathBackId uint `gorm:"column:path_back_id;not null"`
+	GoUserPathBack   GoUserPathBack
 }

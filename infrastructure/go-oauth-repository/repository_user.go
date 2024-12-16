@@ -11,7 +11,7 @@ func (repo *Repository) SaveUser(user *gooauthmodel.GoUserUser) error {
 
 func (repo *Repository) SaveAttributtes(userId uint, attr []gooauthmodel.GoUserUserAttributtes) error {
 	for i := range attr {
-		attr[i].UserId = userId
+		attr[i].GoUserUserId = userId
 	}
 	return repo.db.Save(&attr).Error
 }
