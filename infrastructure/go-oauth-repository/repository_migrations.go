@@ -16,7 +16,7 @@ func (repo *Repository) RunMigrations() error {
 }
 
 func (repo *Repository) ValidateMigrate(version string) (bool, error) {
-	var result gooauthmodel.Migration
+	var result gooauthmodel.UserMigration
 	err := repo.db.Where("migrate_version = ?", version).Find(&result).Error
 	if err != nil {
 		return true, err
@@ -29,7 +29,7 @@ func (repo *Repository) ValidateMigrate(version string) (bool, error) {
 }
 
 func (repo *Repository) SaveVersion(version string) error {
-	return repo.db.Save(&gooauthmodel.Migration{DateCreate: time.Now(), MigrationVersion: version}).Error
+	return repo.db.Save(&gooauthmodel.UserMigration{DateCreate: time.Now(), MigrationVersion: version}).Error
 }
 
 func (repo *Repository) RunMigrate(version string, migration func() error) error {
@@ -53,7 +53,7 @@ func (repo *Repository) RunMigrate(version string, migration func() error) error
 
 func (repo *Repository) Migrate00() error {
 	return repo.db.AutoMigrate(
-		&gooauthmodel.Migration{},
+		&gooauthmodel.UserMigration{},
 		&gooauthmodel.PathBack{},
 		&gooauthmodel.Role{},
 		&gooauthmodel.RolePath{},
