@@ -6,8 +6,8 @@ import (
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
 )
 
-func GetUserByCreate(userParam gooauthrequest.CreateUser, role *gooauthmodel.Role, password string) *gooauthmodel.User {
-	return &gooauthmodel.User{
+func GetUserByCreate(userParam gooauthrequest.CreateUser, role *gooauthmodel.GoUserRole, password string) *gooauthmodel.GoUserUser {
+	return &gooauthmodel.GoUserUser{
 		Email:    userParam.Email,
 		Name:     userParam.FirstName,
 		SubName:  userParam.LastName,
@@ -17,10 +17,10 @@ func GetUserByCreate(userParam gooauthrequest.CreateUser, role *gooauthmodel.Rol
 	}
 }
 
-func GetAttributtes(attributes *map[string][]string) []gooauthmodel.UserAttributtes {
-	var result []gooauthmodel.UserAttributtes
+func GetAttributtes(attributes *map[string][]string) []gooauthmodel.GoUserUserAttributtes {
+	var result []gooauthmodel.GoUserUserAttributtes
 	for key, values := range *attributes {
-		result = append(result, gooauthmodel.UserAttributtes{
+		result = append(result, gooauthmodel.GoUserUserAttributtes{
 			NameAttributte:   key,
 			ValueAttributtes: values[0],
 		})
@@ -28,7 +28,7 @@ func GetAttributtes(attributes *map[string][]string) []gooauthmodel.UserAttribut
 	return result
 }
 
-func GetUserRestAnAttributtes(user *gooauthmodel.User, attrs []gooauthmodel.UserAttributtes) *gooauthrest.User {
+func GetUserRestAnAttributtes(user *gooauthmodel.GoUserUser, attrs []gooauthmodel.GoUserUserAttributtes) *gooauthrest.User {
 	var attrRes *map[string][]string
 	for _, attr := range attrs {
 		addToMap(attrRes, attr.NameAttributte, attr.ValueAttributtes)

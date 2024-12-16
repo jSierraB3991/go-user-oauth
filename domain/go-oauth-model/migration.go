@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserMigration struct {
+type GoUserUserMigration struct {
 	gorm.Model
 	MigrationId      uint      `gorm:"column:id;not null"`
 	MigrationVersion string    `gorm:"column:migrate_version;not null"`
