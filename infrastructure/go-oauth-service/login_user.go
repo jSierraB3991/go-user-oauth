@@ -26,32 +26,37 @@ func (s *GoOauthService) LoginUser(ctx context.Context, userName, password strin
 	}
 
 	exp := s.GetExp()
+
 	tokenString, err := s.GetJwtToken(exp, user.UserId, pathsAllow)
 	if err != nil {
 		return nil, err
 	}
+
 	return &gooauthrest.JWT{
 		AccessToken:  tokenString,
 		RefreshToken: tokenString,
 		ExpiredIn:    exp,
+		Role:         user.Role.RoleName,
 	}, nil
 }
 
-func (GoOauthService) GetJwtToken(exp int, userId uint, pathsAllow []string) (string, error) {
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+func (s *GoOauthService) GetJwtToken(exp int, userId uint, pathsAllow []string) (string, error) {
+	claims := jwt.MapClaims{
 		"user_id":     userId,
 		"exp":         exp,
 		"paths_allow": pathsAllow,
-	})
+		"iat":         time.Now().Unix(),
+	}
 
-	tokenString, err := token.SignedString([]byte("secret"))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+	tokenString, err := token.SignedString([]byte(s.secretForJwt))
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	return tokenString, nil
 }
 
-func (GoOauthService) GetExp() int {
-	return int(jwt.TimeFunc().Add(24 * time.Hour).Unix())
+func (s *GoOauthService) GetExp() int {
+	return int(time.Now().Add(24 * time.Hour).Unix())
 }

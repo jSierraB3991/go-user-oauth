@@ -30,7 +30,7 @@ func (repo *Repository) GetRolesByUserAndRole(userId, roleId uint) ([]string, er
 	var result []string
 
 	var rolePath []gooauthmodel.GoUserRolePath
-	err := repo.db.Where("role_id = ?", roleId).Preload("PathBack").Find(&rolePath).Error
+	err := repo.db.Where("role_id = ?", roleId).Preload("GoUserPathBack").Find(&rolePath).Error
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (repo *Repository) GetRolesByUserAndRole(userId, roleId uint) ([]string, er
 	}
 
 	var userPath []gooauthmodel.GoUserUserPath
-	err = repo.db.Where("user_id = ?", userId).Preload("PathBack").Find(&userPath).Error
+	err = repo.db.Where("user_id = ?", userId).Preload("GoUserPathBack").Find(&userPath).Error
 
 	for _, v := range userPath {
 		result = append(result, v.PathBack.PathRoute)
