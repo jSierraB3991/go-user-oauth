@@ -11,14 +11,14 @@ func (repo *Repository) SaveUser(user *gooauthmodel.GoUserUser) error {
 
 func (repo *Repository) SaveAttributtes(userId uint, attr []gooauthmodel.GoUserUserAttributtes) error {
 	for i := range attr {
-		attr[i].UserId = userId
+		attr[i].GoUserUserId = userId
 	}
 	return repo.db.Save(&attr).Error
 }
 
 func (repo *Repository) GetUserByEmail(userEmail string) (*gooauthmodel.GoUserUser, error) {
 	var result gooauthmodel.GoUserUser
-	err := repo.db.Where("email = ?", userEmail).Find(&result).Error
+	err := repo.db.Preload("GoUserRole").Where("email = ?", userEmail).Find(&result).Error
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (repo *Repository) GetUserByEmail(userEmail string) (*gooauthmodel.GoUserUs
 
 func (repo *Repository) GetUserById(userId uint) (*gooauthmodel.GoUserUser, error) {
 	var result gooauthmodel.GoUserUser
-	err := repo.db.Preload("Role").Find(&result, userId).Error
+	err := repo.db.Preload("GoUserRole").Find(&result, userId).Error
 	if err != nil {
 		return nil, err
 	}

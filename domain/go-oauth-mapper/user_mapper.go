@@ -8,12 +8,12 @@ import (
 
 func GetUserByCreate(userParam gooauthrequest.CreateUser, role *gooauthmodel.GoUserRole, password string) *gooauthmodel.GoUserUser {
 	return &gooauthmodel.GoUserUser{
-		Email:    userParam.Email,
-		Name:     userParam.FirstName,
-		SubName:  userParam.LastName,
-		Password: password,
-		Role:     *role,
-		Enabled:  userParam.Emailverify,
+		Email:      userParam.Email,
+		Name:       userParam.FirstName,
+		SubName:    userParam.LastName,
+		Password:   password,
+		GoUserRole: *role,
+		Enabled:    userParam.Emailverify,
 	}
 }
 
@@ -38,7 +38,7 @@ func GetUserRestAnAttributtes(user *gooauthmodel.GoUserUser, attrs []gooauthmode
 		Name:       user.Name,
 		SubName:    user.SubName,
 		Enabled:    user.Enabled,
-		Role:       user.Role.RoleName,
+		Role:       user.GoUserRole.RoleName,
 		Attributes: attrRes,
 	}
 }

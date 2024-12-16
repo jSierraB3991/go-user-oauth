@@ -12,11 +12,11 @@ type GoUserRolePath struct {
 	gorm.Model
 	RolePathId uint `gorm:"column:id"`
 
-	RoleId uint `gorm:"column:role_id;not null"`
-	Role   GoUserRole
+	GoUserRoleId uint `gorm:"column:role_id;not null"`
+	GoUserRole   GoUserRole
 
-	PathBackId uint `gorm:"column:path_back_id;not null"`
-	PathBack   GoUserPathBack
+	GoUserPathBackId uint `gorm:"column:path_back_id;not null"`
+	GoUserPathBack   GoUserPathBack
 }
 
 type GoUserPathBack struct {
