@@ -27,19 +27,21 @@ func GetAttributtes(attributes *map[string][]string) []gooauthmodel.GoUserUserAt
 	}
 	return result
 }
-
 func GetUserRestAnAttributtes(user *gooauthmodel.GoUserUser, attrs []gooauthmodel.GoUserUserAttributtes) *gooauthrest.User {
-	var attrRes *map[string][]string
+	// Inicializar el mapa correctamente
+	attrRes := make(map[string][]string)
+
 	for _, attr := range attrs {
-		addToMap(attrRes, attr.NameAttributte, attr.ValueAttributtes)
+		addToMap(&attrRes, attr.NameAttributte, attr.ValueAttributtes)
 	}
+
 	return &gooauthrest.User{
 		Email:      user.Email,
 		Name:       user.Name,
 		SubName:    user.SubName,
 		Enabled:    user.Enabled,
 		Role:       user.GoUserRole.RoleName,
-		Attributes: attrRes,
+		Attributes: &attrRes,
 	}
 }
 
