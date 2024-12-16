@@ -27,7 +27,7 @@ func (s *GoOauthService) LoginUser(ctx context.Context, userName, password strin
 
 	exp := s.GetExp()
 
-	tokenString, err := s.GetJwtToken(exp, user.UserId, pathsAllow)
+	tokenString, err := s.GetJwtToken(exp, user.UserId, pathsAllow, user.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -40,12 +40,13 @@ func (s *GoOauthService) LoginUser(ctx context.Context, userName, password strin
 	}, nil
 }
 
-func (s *GoOauthService) GetJwtToken(exp int, userId uint, pathsAllow []string) (string, error) {
+func (s *GoOauthService) GetJwtToken(exp int, userId uint, pathsAllow []string, email string) (string, error) {
 	claims := jwt.MapClaims{
 		"user_id":     userId,
 		"exp":         exp,
 		"paths_allow": pathsAllow,
 		"iat":         time.Now().Unix(),
+		"email":       email,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
