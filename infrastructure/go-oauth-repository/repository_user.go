@@ -6,6 +6,14 @@ import (
 )
 
 func (repo *Repository) SaveUser(user *gooauthmodel.GoUserUser) error {
+	var userExist gooauthmodel.GoUserUser
+	err := repo.db.Where("email = ?").Find(&userExist).Error
+	if err != nil {
+		return err
+	}
+	if userExist.Email != "" {
+		return gooautherror.UserExistsError{}
+	}
 	return repo.db.Save(&user).Error
 }
 
