@@ -7,7 +7,7 @@ import (
 
 func (repo *Repository) SaveUser(user *gooauthmodel.GoUserUser) error {
 	var userExist gooauthmodel.GoUserUser
-	err := repo.db.Where("email = ?").Find(&userExist).Error
+	err := repo.db.Where("email = ?", user.Email).Find(&userExist).Error
 	if err != nil {
 		return err
 	}
