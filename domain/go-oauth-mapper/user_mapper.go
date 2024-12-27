@@ -18,6 +18,9 @@ func GetUserByCreate(userParam gooauthrequest.CreateUser, role *gooauthmodel.GoU
 }
 
 func GetAttributtes(attributes *map[string][]string) []gooauthmodel.GoUserUserAttributtes {
+	if attributes == nil {
+		return nil
+	}
 	var result []gooauthmodel.GoUserUserAttributtes
 	for key, values := range *attributes {
 		result = append(result, gooauthmodel.GoUserUserAttributtes{
