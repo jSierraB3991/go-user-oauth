@@ -27,6 +27,10 @@ func (repo *Repository) SaveAttributtes(userId uint, attr []gooauthmodel.GoUserU
 	return repo.db.Save(&attr).Error
 }
 
+func (repo *Repository) UpdateAttrr(attr []gooauthmodel.GoUserUserAttributtes) error {
+	return repo.db.Save(&attr).Error
+}
+
 func (repo *Repository) GetUserByEmail(userEmail string) (*gooauthmodel.GoUserUser, error) {
 	var result gooauthmodel.GoUserUser
 	err := repo.db.Preload("GoUserRole").Where("email = ?", userEmail).Find(&result).Error
