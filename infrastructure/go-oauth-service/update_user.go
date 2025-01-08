@@ -28,7 +28,7 @@ func (s *GoOauthService) UpdateUser(ctx context.Context, keyCloakUserId string, 
 	}
 	attrDataNews := gooauthmapper.GetAttributtes(attributes)
 
-	finalAttr := gooauthmapper.GetAttributteUpdate(attrData, attrDataNews)
+	finalAttr := gooauthmapper.GetAttributteUpdate(attrData, attrDataNews, data.UserId)
 
 	return s.repo.UpdateAttrr(finalAttr)
 }
