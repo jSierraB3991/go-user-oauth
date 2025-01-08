@@ -84,5 +84,18 @@ func GetAttributteUpdate(attrData []gooauthmodel.GoUserUserAttributtes,
 		}
 	}
 
+	for _, v := range attrData {
+		isForSave := false
+		for _, j := range attrDataNews {
+			if v.NameAttributte == j.NameAttributte {
+				isForSave = true
+			}
+		}
+
+		if !isForSave {
+			result = append(result, v)
+		}
+	}
+
 	return result
 }
