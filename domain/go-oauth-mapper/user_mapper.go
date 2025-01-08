@@ -57,3 +57,32 @@ func addToMap(attrRes *map[string][]string, key string, value string) {
 	// Agregar el valor al slice correspondiente
 	(*attrRes)[key] = append((*attrRes)[key], value)
 }
+
+func GetAttributteUpdate(attrData []gooauthmodel.GoUserUserAttributtes,
+	attrDataNews []gooauthmodel.GoUserUserAttributtes,
+	userId uint) []gooauthmodel.GoUserUserAttributtes {
+
+	var result []gooauthmodel.GoUserUserAttributtes
+
+	for _, j := range attrDataNews {
+		isSavePre := false
+		for _, v := range attrData {
+			if j.NameAttributte == v.NameAttributte {
+				v.ValueAttributtes = j.ValueAttributtes
+				result = append(result, v)
+				isSavePre = true
+				break
+			}
+		}
+
+		if !isSavePre {
+			result = append(result, gooauthmodel.GoUserUserAttributtes{
+				NameAttributte:   j.NameAttributte,
+				GoUserUserId:     userId,
+				ValueAttributtes: j.ValueAttributtes,
+			})
+		}
+	}
+
+	return result
+}
