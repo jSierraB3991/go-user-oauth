@@ -18,10 +18,3 @@ type GoUserRolePath struct {
 	GoUserPathBackId uint `gorm:"column:path_back_id;not null"`
 	GoUserPathBack   GoUserPathBack
 }
-
-type GoUserPathBack struct {
-	gorm.Model
-	PathBackId     uint   `gorm:"column:id"`
-	PathRoute      string `gorm:"column:path_route;not null"`
-	OperationRoute string `gorm:"column:operation_route;not null"`
-}
