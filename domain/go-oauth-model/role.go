@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type GoUserRole struct {
 	gorm.Model
 	RoleId   uint   `gorm:"column:id"`
-	RoleName string `gorm:"column:role_name;not null"`
+	RoleName string `gorm:"column:role_name;not null;unique"`
 }
 
 type GoUserRolePath struct {

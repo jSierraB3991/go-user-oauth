@@ -5,8 +5,8 @@ import "gorm.io/gorm"
 type GoUserPathBack struct {
 	gorm.Model
 	PathBackId     uint   `gorm:"column:id"`
-	PathRoute      string `gorm:"column:path_route;not null"`
-	OperationRoute string `gorm:"column:operation_route;not null"`
+	PathRoute      string `gorm:"column:path_route;not null;uniqueIndex:idx_path_operation"`
+	OperationRoute string `gorm:"column:operation_route;not null;uniqueIndex:idx_path_operation"`
 }
 
 type GoUserUserPath struct {
