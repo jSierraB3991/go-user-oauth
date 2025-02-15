@@ -1,6 +1,8 @@
 package gooauthservice
 
 import (
+	"strings"
+
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
 	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 	"github.com/pquerna/otp/totp"
@@ -8,7 +10,7 @@ import (
 
 func (s *GoOauthService) GenerateQrForDobleOuath(userName string) (*gooauthrest.QrTwoOauthRest, error) {
 	key, err := totp.Generate(totp.GenerateOpts{
-		Issuer:      "MiAplicacion",
+		Issuer:      s.appName,
 		AccountName: userName,
 	})
 	if err != nil {
@@ -24,8 +26,13 @@ func (s *GoOauthService) GenerateQrForDobleOuath(userName string) (*gooauthrest.
 		return nil, err
 	}
 
+	result := key.URL()
+
+	if strings.Trim(s.urlImagenApp, " ") != "" {
+		result += "&image=" + s.urlImagenApp
+	}
+
 	return &gooauthrest.QrTwoOauthRest{
-		Secret: key.Secret(),
-		Url:    key.URL(),
+		Url: result,
 	}, nil
 }
