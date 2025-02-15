@@ -21,4 +21,7 @@ type GoOauthInterface interface {
 	GetUsersByUsersId(ctx context.Context, keycloakUsersId []string) ([]gooauthrest.User, error)
 	ChangePassword(ctx context.Context, keycloakUserId, newPassword string) error
 	ValidateMailByUserId(ctx context.Context, userId string) error
+
+	GenerateQrForDobleOuath(userName string) (*gooauthrest.QrTwoOauthRest, error)
+	ValidateCodeOtp(req gooauthrequest.ValidateOauthCodeRequest) (bool, error)
 }

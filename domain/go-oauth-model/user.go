@@ -16,6 +16,8 @@ type GoUserUser struct {
 
 	CodeValidateEmail    *string `gorm:"column:code_validate_email"`
 	CodeRemenberPassword *string `gorm:"column:code_remenber_password"`
+
+	KeyOathApp string `gorm:"column:key_oath_app"`
 }
 
 type GoUserUserAttributtes struct {

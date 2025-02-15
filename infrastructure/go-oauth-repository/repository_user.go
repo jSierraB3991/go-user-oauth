@@ -63,3 +63,22 @@ func (repo *Repository) GetAttributtesByUserId(userId uint) ([]gooauthmodel.GoUs
 	}
 	return result, nil
 }
+
+func (repo *Repository) SaveSecretToUser(userEmail, keyOath string) error {
+	userData, err := repo.GetUserByEmail(userEmail)
+	if err != nil {
+		return err
+	}
+
+	userData.KeyOathApp = keyOath
+	return repo.db.Save(&userData).Error
+}
+
+func (repo *Repository) GetSecretOauthCode(userEmail string) (*string, error) {
+	var result gooauthmodel.GoUserUser
+	err := repo.db.Where("email = ?", userEmail).Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	return &result.KeyOathApp, nil
+}
