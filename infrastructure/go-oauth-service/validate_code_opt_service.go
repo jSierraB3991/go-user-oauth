@@ -17,5 +17,14 @@ func (s *GoOauthService) ValidateCodeOtp(req gooauthrequest.ValidateOauthCodeReq
 		return false, err
 	}
 
-	return totp.Validate(req.Code, codeDecrypeted), nil
+	isValidCode := totp.Validate(req.Code, codeDecrypeted)
+
+	if isValidCode {
+		err = s.repo.ActiveTwoFactorOauth(req.Username)
+		if err != nil {
+			return false, err
+		}
+	}
+
+	return isValidCode, nil
 }

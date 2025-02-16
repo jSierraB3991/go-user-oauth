@@ -70,6 +70,10 @@ func (repo *Repository) SaveSecretToUser(userEmail, keyOath string) error {
 		return err
 	}
 
+	if userData.IsActiveTwoFactorOauth {
+		return gooautherror.InvalidTwoFactorIsActive{}
+	}
+
 	userData.KeyOathApp = keyOath
 	return repo.db.Save(&userData).Error
 }
@@ -81,4 +85,14 @@ func (repo *Repository) GetSecretOauthCode(userEmail string) (*string, error) {
 		return nil, err
 	}
 	return &result.KeyOathApp, nil
+}
+
+func (repo *Repository) ActiveTwoFactorOauth(userEmail string) error {
+	userData, err := repo.GetUserByEmail(userEmail)
+	if err != nil {
+		return err
+	}
+
+	userData.IsActiveTwoFactorOauth = true
+	return repo.db.Save(&userData).Error
 }
