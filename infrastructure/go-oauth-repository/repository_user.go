@@ -96,3 +96,7 @@ func (repo *Repository) ActiveTwoFactorOauth(userEmail string) error {
 	userData.IsActiveTwoFactorOauth = true
 	return repo.db.Save(&userData).Error
 }
+
+func (repo *Repository) EnableUser(userId uint) error {
+	return repo.db.Model(&gooauthmodel.GoUserUser{}).Where("id = ?", userId).Update("enabled", true).Error
+}
