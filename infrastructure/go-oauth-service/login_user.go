@@ -15,6 +15,10 @@ func (s *GoOauthService) LoginUser(ctx context.Context, userName, password strin
 		return nil, err
 	}
 
+	if !user.Enabled {
+		return nil, gooautherror.UserNotEnabledError{}
+	}
+
 	isVerify := s.passwordService.VerifyPassword(user.Password, password)
 	if !isVerify {
 		return nil, gooautherror.InvalidUserOrPassword{}
