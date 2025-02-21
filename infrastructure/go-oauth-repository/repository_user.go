@@ -17,6 +17,10 @@ func (repo *Repository) SaveUser(user *gooauthmodel.GoUserUser) error {
 	return repo.db.Save(&user).Error
 }
 
+func (repo *Repository) UpdateUser(user *gooauthmodel.GoUserUser) error {
+	return repo.db.Save(&user).Error
+}
+
 func (repo *Repository) SaveAttributtes(userId uint, attr []gooauthmodel.GoUserUserAttributtes) error {
 	if attr == nil {
 		return nil

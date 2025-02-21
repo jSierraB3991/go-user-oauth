@@ -17,7 +17,7 @@ func (s *GoOauthService) UpdateUser(ctx context.Context, keyCloakUserId string, 
 	data.Name = req.FirstName
 	data.SubName = req.LastName
 
-	err = s.repo.SaveUser(data)
+	err = s.repo.UpdateUser(data)
 	if err != nil {
 		return err
 	}
