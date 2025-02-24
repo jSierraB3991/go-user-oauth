@@ -16,6 +16,7 @@ type GoOauthInterface interface {
 	ErrorHandler() error
 	GetUserByRole(ctx context.Context, role string) ([]*gooauthrest.User, error)
 	LoginUser(ctx context.Context, userName, password string) (*gooauthrest.JWT, error)
+	LoginWithTwoFactor(ctx context.Context, userName, codeTwoFactor string) (*gooauthrest.JWT, error)
 
 	GetUserByUserId(ctx context.Context, keycloakId string) (*gooauthrest.User, error)
 	GetUsersByUsersId(ctx context.Context, keycloakUsersId []string) ([]gooauthrest.User, error)

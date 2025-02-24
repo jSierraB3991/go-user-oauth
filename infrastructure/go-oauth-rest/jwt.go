@@ -5,4 +5,5 @@ type JWT struct {
 	RefreshToken string `json:"refresh_token"`
 	ExpiredIn    int    `json:"expired_in"`
 	Role         string `json:"role"`
+	IsTwoFactor  bool   `json:"is_two_factor"`
 }
