@@ -30,11 +30,6 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, userName, codeT
 	if err != nil {
 		return nil, err
 	}
-	if user.IsActiveTwoFactorOauth {
-		return &gooauthrest.JWT{
-			IsTwoFactor: true,
-		}, nil
-	}
 	return &gooauthrest.JWT{
 		AccessToken:  tokenString,
 		RefreshToken: tokenString,

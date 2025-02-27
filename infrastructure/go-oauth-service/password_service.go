@@ -10,6 +10,10 @@ func NewPasswordService() *PasswordService {
 }
 
 func (ps *PasswordService) EncryptPassword(password string) (string, error) {
+	err := ps.ValidatePassword(password)
+	if err != nil {
+		return "", err
+	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err

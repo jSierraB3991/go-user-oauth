@@ -104,3 +104,19 @@ func (repo *Repository) ActiveTwoFactorOauth(userEmail string) error {
 func (repo *Repository) EnableUser(userId uint) error {
 	return repo.db.Model(&gooauthmodel.GoUserUser{}).Where("id = ?", userId).Update("enabled", true).Error
 }
+
+func (repo *Repository) UpdateTokenMailValidate(userId uint, tokenString string) error {
+	return repo.db.Model(&gooauthmodel.GoUserUser{}).Where("id = ? ", userId).Update("token_to_change_password", tokenString).Error
+}
+
+func (repo *Repository) GetUserByToken(token string) (*gooauthmodel.GoUserUser, error) {
+	var result gooauthmodel.GoUserUser
+	err := repo.db.Where("token_to_change_password = ?", token).Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	if result.Password == "" {
+		return nil, gooautherror.InvalidTokenError{}
+	}
+	return &result, nil
+}

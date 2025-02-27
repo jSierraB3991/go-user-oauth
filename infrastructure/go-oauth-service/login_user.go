@@ -40,5 +40,6 @@ func (s *GoOauthService) LoginUser(ctx context.Context, userName, password strin
 		RefreshToken: tokenString,
 		ExpiredIn:    exp,
 		Role:         user.GoUserRole.RoleName,
+		IsTwoFactor:  false,
 	}, nil
 }

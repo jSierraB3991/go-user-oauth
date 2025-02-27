@@ -19,6 +19,8 @@ type GoUserUser struct {
 
 	KeyOathApp             string `gorm:"column:key_oath_app"`
 	IsActiveTwoFactorOauth bool   `gorm:"column:is_active_two_factor:not nul;default:false"`
+
+	TokenChangePassword string `gorm:"column:token_to_change_password"`
 }
 
 type GoUserUserAttributtes struct {
