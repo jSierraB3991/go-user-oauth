@@ -3,6 +3,7 @@ package gooauthinterface
 import (
 	"context"
 	"net/http"
+	"time"
 
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
@@ -25,4 +26,8 @@ type GoOauthInterface interface {
 
 	GenerateQrForDobleOuath(userName string) (*gooauthrest.QrTwoOauthRest, error)
 	ValidateCodeOtp(req gooauthrequest.ValidateOauthCodeRequest) (bool, error)
+
+	GeneratetokenToValidate(userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error)
+	RemenberPassword(token, newPassword string) error
+	ValidateToken(token string) error
 }
