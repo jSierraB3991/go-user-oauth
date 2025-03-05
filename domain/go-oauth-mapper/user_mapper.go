@@ -4,6 +4,8 @@ import (
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
+
+	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func GetUserByCreate(userParam gooauthrequest.CreateUser, role *gooauthmodel.GoUserRole, password string) *gooauthmodel.GoUserUser {
@@ -31,7 +33,6 @@ func GetAttributtes(attributes *map[string][]string) []gooauthmodel.GoUserUserAt
 	return result
 }
 func GetUserRestAnAttributtes(user *gooauthmodel.GoUserUser, attrs []gooauthmodel.GoUserUserAttributtes) *gooauthrest.User {
-	// Inicializar el mapa correctamente
 	attrRes := make(map[string][]string)
 
 	for _, attr := range attrs {
@@ -39,6 +40,7 @@ func GetUserRestAnAttributtes(user *gooauthmodel.GoUserUser, attrs []gooauthmode
 	}
 
 	return &gooauthrest.User{
+		Id:         jsierralibs.GetFloatStringToUInt(user.UserId),
 		Email:      user.Email,
 		Name:       user.Name,
 		SubName:    user.SubName,

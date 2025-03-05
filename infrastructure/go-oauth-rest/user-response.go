@@ -1,6 +1,7 @@
 package gooauthrest
 
 type User struct {
+	Id         string               `json:"id"`
 	Email      string               `json:"email"`
 	Name       string               `json:"name"`
 	SubName    string               `json:"sub_name"`
