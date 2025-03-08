@@ -30,4 +30,6 @@ type GoOauthInterface interface {
 	GeneratetokenToValidate(userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error)
 	RemenberPassword(token, newPassword, codeTwoFactor string) error
 	IsActiveTwoFactorOauth(token string) (bool, error)
+
+	IsActiveTwoFactor(user string) (bool, error)
 }

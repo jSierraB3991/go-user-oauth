@@ -36,3 +36,11 @@ func (s *GoOauthService) GenerateQrForDobleOuath(userName string) (*gooauthrest.
 		Url: result,
 	}, nil
 }
+
+func (s *GoOauthService) IsActiveTwoFactor(user string) (bool, error) {
+	userData, err := s.repo.GetUserByEmail(user)
+	if err != nil {
+		return false, err
+	}
+	return userData.IsActiveTwoFactorOauth, nil
+}
