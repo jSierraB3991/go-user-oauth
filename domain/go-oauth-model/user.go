@@ -18,7 +18,7 @@ type GoUserUser struct {
 	CodeRemenberPassword *string `gorm:"column:code_remenber_password"`
 
 	KeyOathApp             string `gorm:"column:key_oath_app"`
-	IsActiveTwoFactorOauth bool   `gorm:"column:is_active_two_factor:not nul;default:false"`
+	IsActiveTwoFactorOauth bool   `gorm:"column:is_active_two_factor:not null;default:false"`
 
 	TokenChangePassword string `gorm:"column:token_to_change_password"`
 }
