@@ -32,4 +32,5 @@ type GoOauthInterface interface {
 	IsActiveTwoFactorOauth(token string) (bool, error)
 
 	IsActiveTwoFactor(user string) (bool, error)
+	DisAvailableTwoFactorAuth(userEmail, codeTwoFactor string) error
 }
