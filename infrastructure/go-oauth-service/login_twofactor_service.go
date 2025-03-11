@@ -3,9 +3,7 @@ package gooauthservice
 import (
 	"context"
 	"errors"
-	"strconv"
 	"strings"
-	"time"
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
@@ -30,15 +28,6 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, userName, codeT
 	}
 
 	codeDecrypeted := parts[0]
-	expirationTime, err := strconv.ParseInt(parts[1], 10, 64)
-	if err != nil {
-		return nil, err
-	}
-
-	if time.Now().Unix() > expirationTime {
-		return nil, gooautherror.QrExpiredError{}
-	}
-
 	isValidCode := totp.Validate(codeTwoFactor, codeDecrypeted)
 	if !isValidCode {
 		return nil, gooautherror.InvalidCodeTwoFactorOauthError{}
