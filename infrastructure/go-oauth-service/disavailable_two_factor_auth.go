@@ -16,6 +16,10 @@ func (s *GoOauthService) DisAvailableTwoFactorAuth(userEmail, codeTwoFactor stri
 		return err
 	}
 
+	if !user.IsActiveTwoFactorOauth {
+		return gooautherror.UserNoHaveTwoFactorError{}
+	}
+
 	secretData, err := jsierralibs.Decrypt(user.KeyOathApp, s.aesKeyForEncrypt)
 	if err != nil {
 		return err

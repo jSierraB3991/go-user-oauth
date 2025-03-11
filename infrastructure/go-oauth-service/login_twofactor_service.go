@@ -17,6 +17,10 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, userName, codeT
 		return nil, err
 	}
 
+	if !user.IsActiveTwoFactorOauth {
+		return nil, gooautherror.UserNoHaveTwoFactorError{}
+	}
+
 	secretData, err := jsierralibs.Decrypt(user.KeyOathApp, s.aesKeyForEncrypt)
 	if err != nil {
 		return nil, err
