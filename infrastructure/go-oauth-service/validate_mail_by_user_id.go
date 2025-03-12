@@ -9,7 +9,7 @@ import (
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 )
 
-func (s *GoOauthService) GenerateValidateMail(mailSend string) (string, error) {
+func (s *GoOauthService) GenerateValidateMail(mailSend, keyToGenerateToken string) (string, error) {
 	userData, err := s.repo.GetUserByEmail(mailSend)
 	if err != nil {
 		return "", err
@@ -20,7 +20,7 @@ func (s *GoOauthService) GenerateValidateMail(mailSend string) (string, error) {
 		"exp":     time.Now().UTC().Add(24 * time.Hour).Unix(), // Expira en 24 horas
 	})
 
-	var secretKey = []byte(s.secretForJwt)
+	var secretKey = []byte(keyToGenerateToken)
 	tokenString, err := token.SignedString(secretKey)
 	if err != nil {
 		return "", err
