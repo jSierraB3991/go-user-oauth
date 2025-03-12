@@ -3,6 +3,7 @@ package gooauthrepository
 import (
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
+	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (repo *Repository) SaveUser(user *gooauthmodel.GoUserUser) error {
@@ -132,6 +133,17 @@ func (repo *Repository) GetUsersByEmail(emails []string) ([]gooauthmodel.GoUserU
 
 	var result []gooauthmodel.GoUserUser
 	err := repo.db.Where("email IN (?)", emails).Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (repo *Repository) GetUsersPage(page *jsierralibs.Paggination) ([]gooauthmodel.GoUserUser, error) {
+	var result []gooauthmodel.GoUserUser
+	params := []jsierralibs.PagginationParam{}
+	preloads := []jsierralibs.PreloadParams{}
+	err := repo.db.Scopes(repo.paginate_with_param(result, page, params, preloads)).Find(&result).Error
 	if err != nil {
 		return nil, err
 	}

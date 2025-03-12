@@ -5,6 +5,8 @@ import (
 	"time"
 
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
+
+	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (repo *Repository) RunMigrations() error {
@@ -12,7 +14,16 @@ func (repo *Repository) RunMigrations() error {
 	if err != nil {
 		return err
 	}
-	return repo.RunMigrate("01", repo.MigrateO1)
+	err = repo.RunMigrate("01", repo.MigrateO1)
+	if err != nil {
+		return err
+	}
+
+	err = repo.RunMigrate("02", repo.Migrate02)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (repo *Repository) ValidateMigrate(version string) (bool, error) {
@@ -61,4 +72,32 @@ func (repo *Repository) Migrate00() error {
 		&gooauthmodel.GoUserUserAttributtes{},
 		&gooauthmodel.GoUserUserPath{},
 	)
+}
+
+func (repo *Repository) Migrate02() error {
+	return repo.CapitalizeNameInDatabase(1, 10)
+}
+
+func (repo *Repository) CapitalizeNameInDatabase(page, limit int) error {
+	if limit < page {
+		return nil
+	}
+	pagination := jsierralibs.Paggination{Limit: 10, Page: page}
+
+	userDataDb, err := repo.GetUsersPage(&pagination)
+	if err != nil {
+		return err
+	}
+	for _, v := range userDataDb {
+		newName := jsierralibs.CapitalizeName(v.Name)
+		newSubName := jsierralibs.CapitalizeName(v.SubName)
+
+		v.Name = newName
+		v.SubName = newSubName
+		err = repo.UpdateUser(&v)
+		if err != nil {
+			return err
+		}
+	}
+	return repo.CapitalizeNameInDatabase(page+1, pagination.TotalPages)
 }

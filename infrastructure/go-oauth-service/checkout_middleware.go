@@ -20,7 +20,7 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 		return false
 	}
 
-	if strings.Trim(headers[0], " ") == gooauthlibs.ALONE_BEARER_HEADER {
+	if strings.TrimSpace(headers[0]) == gooauthlibs.ALONE_BEARER_HEADER {
 		return false
 	}
 

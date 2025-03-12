@@ -15,11 +15,11 @@ func (s *PasswordService) ValidatePassword(password string) error {
 }
 
 func validateLength(password string) error {
-	if strings.Trim(password, " ") == "" {
+	if strings.TrimSpace(password) == "" {
 		return gooautherror.ThePasswordIsVoidError{}
 	}
 
-	if len(strings.Trim(password, " ")) < 6 {
+	if len(strings.TrimSpace(password)) < 6 {
 		return gooautherror.ThePasswordIsLessToSixWordError{}
 	}
 	return nil

@@ -14,8 +14,8 @@ func (s *GoOauthService) UpdateUser(ctx context.Context, keyCloakUserId string, 
 		return err
 	}
 
-	data.Name = req.FirstName
-	data.SubName = req.LastName
+	data.Name = jsierralibs.CapitalizeName(req.FirstName)
+	data.SubName = jsierralibs.CapitalizeName(req.LastName)
 
 	err = s.repo.UpdateUser(data)
 	if err != nil {

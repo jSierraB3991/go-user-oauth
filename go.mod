@@ -4,7 +4,7 @@ go 1.23.4
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/jSierraB3991/jsierra-libs v0.1.6
+	github.com/jSierraB3991/jsierra-libs v0.2.8
 	github.com/pquerna/otp v1.4.0
 	golang.org/x/crypto v0.33.0
 	gorm.io/gorm v1.25.12

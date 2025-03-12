@@ -30,7 +30,7 @@ func NewGoOauthService(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
 	}
 
 	appName := serviceModel.AppName
-	if strings.Trim(appName, " ") == "" {
+	if strings.TrimSpace(appName) == "" {
 		appName = "Mi APP"
 	}
 

@@ -11,8 +11,8 @@ import (
 func GetUserByCreate(userParam gooauthrequest.CreateUser, role *gooauthmodel.GoUserRole, password string) *gooauthmodel.GoUserUser {
 	return &gooauthmodel.GoUserUser{
 		Email:      userParam.Email,
-		Name:       userParam.FirstName,
-		SubName:    userParam.LastName,
+		Name:       jsierralibs.CapitalizeName(userParam.FirstName),
+		SubName:    jsierralibs.CapitalizeName(userParam.LastName),
 		Password:   password,
 		GoUserRole: *role,
 		Enabled:    userParam.Emailverify,

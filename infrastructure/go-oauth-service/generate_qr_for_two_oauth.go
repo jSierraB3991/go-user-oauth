@@ -34,7 +34,7 @@ func (s *GoOauthService) GenerateQrForDobleOuath(userName string) (*gooauthrest.
 
 	result := key.URL()
 
-	if strings.Trim(s.urlImagenApp, " ") != "" {
+	if strings.TrimSpace(s.urlImagenApp) != "" {
 		result += "&image=" + s.urlImagenApp
 	}
 
