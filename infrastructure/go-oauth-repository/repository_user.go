@@ -124,3 +124,16 @@ func (repo *Repository) GetUserByToken(token string) (*gooauthmodel.GoUserUser, 
 func (repo *Repository) UpdateLinkMailValidateMail(userId uint, tokenString string) error {
 	return repo.db.Model(&gooauthmodel.GoUserUser{}).Where("id = ? ", userId).Update("link_to_validate_mail", tokenString).Error
 }
+
+func (repo *Repository) GetUsersByEmail(emails []string) ([]gooauthmodel.GoUserUser, error) {
+	if len(emails) == 0 {
+		return []gooauthmodel.GoUserUser{}, nil
+	}
+
+	var result []gooauthmodel.GoUserUser
+	err := repo.db.Where("email IN (?)", emails).Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}

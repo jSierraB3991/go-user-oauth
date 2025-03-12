@@ -34,4 +34,5 @@ type GoOauthInterface interface {
 
 	IsActiveTwoFactor(user string) (bool, error)
 	DisAvailableTwoFactorAuth(userEmail, codeTwoFactor string) error
+	GetUsersByEmail(emails []string) ([]gooauthrest.User, error)
 }

@@ -50,6 +50,15 @@ func GetUserRestAnAttributtes(user *gooauthmodel.GoUserUser, attrs []gooauthmode
 	}
 }
 
+func GetUsersRest(users []gooauthmodel.GoUserUser) []gooauthrest.User {
+	var result []gooauthrest.User
+	for _, v := range users {
+		data := GetUserRestAnAttributtes(&v, nil)
+		result = append(result, *data)
+	}
+	return result
+}
+
 func addToMap(attrRes *map[string][]string, key string, value string) {
 	// Si la clave no existe en el mapa, inicializamos su slice
 	if _, exists := (*attrRes)[key]; !exists {
