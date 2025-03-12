@@ -28,6 +28,7 @@ type GoOauthInterface interface {
 	ValidateCodeOtp(req gooauthrequest.ValidateOauthCodeRequest) (bool, error)
 
 	GeneratetokenToValidate(userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error)
+	GenerateValidateMail(mailSend string) (string, error)
 	RemenberPassword(token, newPassword, codeTwoFactor string) error
 	IsActiveTwoFactorOauth(token string) (bool, error)
 

@@ -24,7 +24,7 @@ func (s *GoOauthService) GeneratetokenToValidate(userId, keyToGenerateToken stri
 	if err != nil {
 		return nil, err
 	}
-	err = s.repo.UpdateTokenMailValidate(dataUser.UserId, tokenString)
+	err = s.repo.UpdateTokenMailValidatePassword(dataUser.UserId, tokenString)
 	if err != nil {
 		return nil, err
 	}

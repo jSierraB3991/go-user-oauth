@@ -105,7 +105,7 @@ func (repo *Repository) EnableUser(userId uint) error {
 	return repo.db.Model(&gooauthmodel.GoUserUser{}).Where("id = ?", userId).Update("enabled", true).Error
 }
 
-func (repo *Repository) UpdateTokenMailValidate(userId uint, tokenString string) error {
+func (repo *Repository) UpdateTokenMailValidatePassword(userId uint, tokenString string) error {
 	return repo.db.Model(&gooauthmodel.GoUserUser{}).Where("id = ? ", userId).Update("token_to_change_password", tokenString).Error
 }
 
@@ -119,4 +119,8 @@ func (repo *Repository) GetUserByToken(token string) (*gooauthmodel.GoUserUser, 
 		return nil, gooautherror.InvalidTokenError{}
 	}
 	return &result, nil
+}
+
+func (repo *Repository) UpdateLinkMailValidateMail(userId uint, tokenString string) error {
+	return repo.db.Model(&gooauthmodel.GoUserUser{}).Where("id = ? ", userId).Update("link_to_validate_mail", tokenString).Error
 }

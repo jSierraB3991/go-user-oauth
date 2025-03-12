@@ -21,6 +21,7 @@ type GoUserUser struct {
 	IsActiveTwoFactorOauth bool   `gorm:"column:is_active_two_factor;not null;default:false"`
 
 	TokenChangePassword string `gorm:"column:token_to_change_password"`
+	LinkToValidateMail  string `gorm:"column:link_to_validate_mail"`
 }
 
 type GoUserUserAttributtes struct {
