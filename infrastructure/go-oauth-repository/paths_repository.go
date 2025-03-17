@@ -2,18 +2,25 @@ package gooauthrepository
 
 import gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 
-func (repo *Repository) SavePath(modelDb *gooauthmodel.GoUserPathBack) error {
-	data, err := repo.getPath(modelDb.PathRoute, modelDb.OperationRoute)
+func (repo *Repository) SavePath(path, operation string) (uint, error) {
+	data, err := repo.getPath(path, operation)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	if data.PathRoute != "" {
-		modelDb = data
-		return nil
+		return data.PathBackId, nil
 	}
 
-	return repo.db.Save(&modelDb).Error
+	modelDb := &gooauthmodel.GoUserPathBack{
+		PathRoute:      path,
+		OperationRoute: operation,
+	}
+	err = repo.db.Save(&modelDb).Error
+	if err != nil {
+		return 0, err
+	}
+	return modelDb.PathBackId, nil
 }
 
 func (repo *Repository) SavePathRole(pathId uint, roleName string) error {

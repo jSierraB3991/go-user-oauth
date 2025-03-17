@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strings"
 
-	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooauthlibs "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_libs"
 	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 )
@@ -16,18 +15,14 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 		return true
 	}
 
+	pathId, err := s.repo.SavePath(requets.URL.Path, requets.Method)
+	if err != nil {
+		log.Printf("Error save path %v", err)
+	}
+
 	headers := requets.Header[gooauthlibs.HeaderAuthorization]
 	if len(headers) <= 0 {
 		return false
-	}
-
-	modelDb := gooauthmodel.GoUserPathBack{
-		PathRoute:      requets.URL.Path,
-		OperationRoute: requets.Method,
-	}
-	err := s.repo.SavePath(&modelDb)
-	if err != nil {
-		log.Printf("Error save path %v", err)
 	}
 
 	if strings.TrimSpace(headers[0]) == gooauthlibs.ALONE_BEARER_HEADER {
@@ -41,7 +36,7 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 	}
 
 	if roleName != "" {
-		err = s.repo.SavePathRole(modelDb.PathBackId, roleName)
+		err = s.repo.SavePathRole(pathId, roleName)
 		if err != nil {
 			log.Printf("Error save role path %v", err)
 		}
