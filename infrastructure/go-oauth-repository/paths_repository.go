@@ -9,6 +9,7 @@ func (repo *Repository) SavePath(modelDb *gooauthmodel.GoUserPathBack) error {
 	}
 
 	if data.PathRoute != "" {
+		modelDb = data
 		return nil
 	}
 
