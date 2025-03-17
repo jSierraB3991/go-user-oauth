@@ -24,7 +24,7 @@ func (s *GoOauthService) LoginUser(ctx context.Context, userName, password strin
 
 	exp := s.GetExp()
 
-	tokenString, err := s.GetJwtToken(exp, user.UserId, user.Email)
+	tokenString, err := s.GetJwtToken(exp, user.UserId, user.Email, user.GoUserRole.RoleName)
 	if err != nil {
 		return nil, err
 	}

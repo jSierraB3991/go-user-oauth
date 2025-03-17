@@ -49,7 +49,7 @@ func (GoOauthService) ErrorHandler() error {
 	return gooautherror.InactiveToken{}
 }
 
-func (s *GoOauthService) GetJwtToken(exp int, userId uint, email string) (string, error) {
+func (s *GoOauthService) GetJwtToken(exp int, userId uint, email, roleName string) (string, error) {
 	pathsAllow, err := s.repo.GetPathAllowByUser(userId)
 	if err != nil {
 		return "", err
@@ -60,6 +60,7 @@ func (s *GoOauthService) GetJwtToken(exp int, userId uint, email string) (string
 		"paths_allow": pathsAllow,
 		"iat":         time.Now().Unix(),
 		"email":       email,
+		"role_name":   roleName,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

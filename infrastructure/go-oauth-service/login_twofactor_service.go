@@ -38,7 +38,7 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, userName, codeT
 	}
 
 	exp := s.GetExp()
-	tokenString, err := s.GetJwtToken(exp, user.UserId, user.Email)
+	tokenString, err := s.GetJwtToken(exp, user.UserId, user.Email, user.GoUserRole.RoleName)
 	if err != nil {
 		return nil, err
 	}
