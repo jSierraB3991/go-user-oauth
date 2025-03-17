@@ -29,7 +29,7 @@ func (repo *Repository) SavePathRole(pathId uint, roleName string) error {
 	}
 
 	if preData.GoUserPathBackId != pathId || preData.GoUserRoleId != role.RoleId {
-		return repo.db.Save(&gooauthmodel.GoUserRolePath{RolePathId: pathId, GoUserRoleId: role.RoleId}).Error
+		return repo.db.Save(&gooauthmodel.GoUserRolePath{GoUserPathBackId: pathId, GoUserRoleId: role.RoleId}).Error
 	}
 	return nil
 }
