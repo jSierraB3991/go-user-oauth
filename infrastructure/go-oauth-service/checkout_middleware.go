@@ -5,17 +5,20 @@ import (
 	"net/http"
 	"strings"
 
+	gooauthmapper "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-mapper"
 	gooauthlibs "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_libs"
 	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
-	allow := jsierralibs.PublicMiddleWare(requets.URL.Path, requets.Method)
+
+	path := gooauthmapper.ConvertPathToRegex(requets.URL.Path)
+	allow := jsierralibs.PublicMiddleWare(path, requets.Method)
 	if allow {
 		return true
 	}
 
-	pathId, err := s.repo.SavePath(requets.URL.Path, requets.Method)
+	pathId, err := s.repo.SavePath(path, requets.Method)
 	if err != nil {
 		log.Printf("Error save path %v", err)
 	}

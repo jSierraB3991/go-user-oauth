@@ -8,6 +8,7 @@ import (
 )
 
 func (s *GoOauthService) LoginUser(ctx context.Context, userName, password string) (*gooauthrest.JWT, error) {
+
 	user, err := s.repo.GetUserByEmail(userName)
 	if err != nil {
 		return nil, err
@@ -24,7 +25,7 @@ func (s *GoOauthService) LoginUser(ctx context.Context, userName, password strin
 
 	exp := s.GetExp()
 
-	tokenString, err := s.GetJwtToken(exp, user.UserId, user.Email, user.GoUserRole.RoleName)
+	tokenString, err := s.GetJwtToken(exp, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName)
 	if err != nil {
 		return nil, err
 	}
