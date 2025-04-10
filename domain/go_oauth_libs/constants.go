@@ -6,5 +6,8 @@ const (
 	ROLE_ADMIN = "ROLE_ADMIN"
 	ROLE_USER  = "ROLE_USER"
 
-	ALONE_BEARER_HEADER = "Bearer"
+	ALONE_BEARER_HEADER  = "Bearer"
+	BEARER_HEADER_PREFIX = "Bearer "
+
+	EMAIL_CONSTANT = "email"
 )

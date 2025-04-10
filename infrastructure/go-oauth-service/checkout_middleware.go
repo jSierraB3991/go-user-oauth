@@ -48,7 +48,7 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 }
 
 func GetHeaderJwtToken(requet *http.Request, header string) (string, error) {
-	stringInterface, err := jsierralibs.GetClaimByToken(requet.Header[gooauthlibs.HeaderAuthorization][0], header)
+	stringInterface, err := gooauthlibs.GetClaimByToken(requet.Header[gooauthlibs.HeaderAuthorization][0], header)
 	if err != nil {
 		return "", err
 	}
