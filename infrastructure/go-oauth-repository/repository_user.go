@@ -3,6 +3,7 @@ package gooauthrepository
 import (
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
+	gooauthlibs "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_libs"
 	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 )
 
@@ -148,4 +149,20 @@ func (repo *Repository) GetUsersPage(page *jsierralibs.Paggination) ([]gooauthmo
 		return nil, err
 	}
 	return result, nil
+}
+
+func (repo *Repository) ExistsUserAdministrator() (bool, error) {
+
+	roleAdministrator, err := repo.GetRoleByName(gooauthlibs.ROLE_ADMIN)
+	if err != nil {
+		return false, err
+	}
+
+	var result gooauthmodel.GoUserUser
+	err = repo.db.Where("role_id = ?", roleAdministrator.RoleId).Find(&result).Error
+	if err != nil {
+		return false, err
+	}
+
+	return result.Email != "", nil
 }

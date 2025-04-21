@@ -35,4 +35,7 @@ type GoOauthInterface interface {
 	IsActiveTwoFactor(user string) (bool, error)
 	DisAvailableTwoFactorAuth(userEmail, codeTwoFactor string) error
 	GetUsersByEmail(emails []string) ([]gooauthrest.User, error)
+
+	CreateUserAdministrator(ctx context.Context, userEmail, userpassword string, attributes *map[string][]string) (string, error)
+	ExistsUserAdministrator(ctx context.Context) (bool, error)
 }
