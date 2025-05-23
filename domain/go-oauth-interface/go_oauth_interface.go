@@ -24,7 +24,7 @@ type GoOauthInterface interface {
 	ChangePassword(ctx context.Context, req gooauthrequest.ChangePasswordRequest) error
 	ValidateMailByUserId(ctx context.Context, userId string) error
 
-	GenerateQrForDobleOuath(ctx context.Context, userName string) (*gooauthrest.QrTwoOauthRest, error)
+	GenerateQrForDobleOuath(ctx context.Context, userName, appName, imageUrl string) (*gooauthrest.QrTwoOauthRest, error)
 	ValidateCodeOtp(ctx context.Context, req gooauthrequest.ValidateOauthCodeRequest) (bool, error)
 
 	GeneratetokenToValidate(ctx context.Context, userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error)
@@ -36,6 +36,6 @@ type GoOauthInterface interface {
 	DisAvailableTwoFactorAuth(ctx context.Context, userEmail, codeTwoFactor string) error
 	GetUsersByEmail(ctx context.Context, emails []string) ([]gooauthrest.User, error)
 
-	CreateUserAdministrator(ctx context.Context, userEmail, userpassword string, attributes *map[string][]string) (string, error)
+	CreateUserAdministrator(ctx context.Context, userEmail, userpassword, appName string, attributes *map[string][]string) (string, error)
 	ExistsUserAdministrator(ctx context.Context) (bool, error)
 }

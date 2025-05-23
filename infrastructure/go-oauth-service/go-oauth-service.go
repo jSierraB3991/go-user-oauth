@@ -3,11 +3,9 @@ package gooauthservice
 import (
 	"context"
 	"log"
-	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	gooauthrepository "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-repository"
 	"gorm.io/gorm"
@@ -18,23 +16,20 @@ type GoOauthService struct {
 	passwordService         *PasswordService
 	secretForJwt            string
 	aesKeyForEncrypt        string
-	appName                 string
-	urlImagenApp            string
 	timeToExpiredQrForOauth time.Duration
 }
 
 func NewGoOauthService(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
-	serviceModel gooauthmodel.ServiceModeParam, timeToExpiredQrForOauth time.Duration) *GoOauthService {
+	timeToExpiredQrForOauth time.Duration) *GoOauthService {
 	return NewGoOauthServiceWithSchemas(database,
 		secretForJwt,
 		aesKeyForEncrypt,
-		serviceModel,
 		timeToExpiredQrForOauth,
 		[]string{"public"})
 }
 
 func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
-	serviceModel gooauthmodel.ServiceModeParam, timeToExpiredQrForOauth time.Duration,
+	timeToExpiredQrForOauth time.Duration,
 	schemas []string) *GoOauthService {
 	repo := gooauthrepository.InitiateRepo(database)
 	err := repo.RunMigrations(schemas)
@@ -42,18 +37,11 @@ func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncr
 		log.Fatal(err)
 	}
 
-	appName := serviceModel.AppName
-	if strings.TrimSpace(appName) == "" {
-		appName = "Mi APP"
-	}
-
 	return &GoOauthService{
 		repo:                    repo,
 		passwordService:         NewPasswordService(),
 		secretForJwt:            secretForJwt,
 		aesKeyForEncrypt:        aesKeyForEncrypt,
-		appName:                 appName,
-		urlImagenApp:            serviceModel.UrlImagenApp,
 		timeToExpiredQrForOauth: timeToExpiredQrForOauth,
 	}
 }

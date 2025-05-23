@@ -11,9 +11,9 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
-func (s *GoOauthService) GenerateQrForDobleOuath(ctx context.Context, userName string) (*gooauthrest.QrTwoOauthRest, error) {
+func (s *GoOauthService) GenerateQrForDobleOuath(ctx context.Context, userName, appName, imageUrl string) (*gooauthrest.QrTwoOauthRest, error) {
 	key, err := totp.Generate(totp.GenerateOpts{
-		Issuer:      s.appName,
+		Issuer:      appName,
 		AccountName: userName,
 	})
 	if err != nil {
@@ -35,8 +35,8 @@ func (s *GoOauthService) GenerateQrForDobleOuath(ctx context.Context, userName s
 
 	result := key.URL()
 
-	if strings.TrimSpace(s.urlImagenApp) != "" {
-		result += "&image=" + s.urlImagenApp
+	if strings.TrimSpace(imageUrl) != "" {
+		result += "&image=" + imageUrl
 	}
 
 	return &gooauthrest.QrTwoOauthRest{

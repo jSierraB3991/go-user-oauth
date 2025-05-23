@@ -11,7 +11,7 @@ func (s *GoOauthService) ExistsUserAdministrator(ctx context.Context) (bool, err
 	return s.repo.ExistsUserAdministrator(ctx)
 }
 
-func (s *GoOauthService) CreateUserAdministrator(ctx context.Context, userEmail, userpassword string, attributes *map[string][]string) (string, error) {
+func (s *GoOauthService) CreateUserAdministrator(ctx context.Context, userEmail, userpassword, appName string, attributes *map[string][]string) (string, error) {
 
 	existsUserAdministrator, err := s.ExistsUserAdministrator(ctx)
 	if err != nil {
@@ -27,7 +27,7 @@ func (s *GoOauthService) CreateUserAdministrator(ctx context.Context, userEmail,
 		UserName:    userEmail,
 		Password:    userpassword,
 		FirstName:   "Admin",
-		LastName:    s.appName,
+		LastName:    appName,
 		Emailverify: true,
 	}
 
