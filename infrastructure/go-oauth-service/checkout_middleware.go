@@ -12,13 +12,14 @@ import (
 
 func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 
+	ctx := requets.Context()
 	path := gooauthmapper.ConvertPathToRegex(requets.URL.Path)
 	allow := jsierralibs.PublicMiddleWare(path, requets.Method)
 	if allow {
 		return true
 	}
 
-	pathId, err := s.repo.SavePath(path, requets.Method)
+	pathId, err := s.repo.SavePath(ctx, path, requets.Method)
 	if err != nil {
 		log.Printf("Error save path %v", err)
 	}
@@ -39,7 +40,7 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 	}
 
 	if roleName != "" {
-		err = s.repo.SavePathRole(pathId, roleName)
+		err = s.repo.SavePathRole(ctx, pathId, roleName)
 		if err != nil {
 			log.Printf("Error save role path %v", err)
 		}

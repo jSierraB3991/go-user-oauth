@@ -1,6 +1,7 @@
 package gooauthservice
 
 import (
+	"context"
 	"log"
 	"strings"
 	"time"
@@ -22,9 +23,21 @@ type GoOauthService struct {
 	timeToExpiredQrForOauth time.Duration
 }
 
-func NewGoOauthService(database *gorm.DB, secretForJwt, aesKeyForEncrypt string, serviceModel gooauthmodel.ServiceModeParam, timeToExpiredQrForOauth time.Duration) *GoOauthService {
+func NewGoOauthService(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
+	serviceModel gooauthmodel.ServiceModeParam, timeToExpiredQrForOauth time.Duration) *GoOauthService {
+	return NewGoOauthServiceWithSchemas(database,
+		secretForJwt,
+		aesKeyForEncrypt,
+		serviceModel,
+		timeToExpiredQrForOauth,
+		[]string{"public"})
+}
+
+func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
+	serviceModel gooauthmodel.ServiceModeParam, timeToExpiredQrForOauth time.Duration,
+	schemas []string) *GoOauthService {
 	repo := gooauthrepository.InitiateRepo(database)
-	err := repo.RunMigrations()
+	err := repo.RunMigrations(schemas)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,13 +57,12 @@ func NewGoOauthService(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
 		timeToExpiredQrForOauth: timeToExpiredQrForOauth,
 	}
 }
-
 func (GoOauthService) ErrorHandler() error {
 	return gooautherror.InactiveToken{}
 }
 
-func (s *GoOauthService) GetJwtToken(exp int, userId, roleId uint, email, roleName string) (string, error) {
-	pathsAllow, err := s.repo.GetPathAllowByUser(userId)
+func (s *GoOauthService) GetJwtToken(ctx context.Context, exp int, userId, roleId uint, email, roleName string) (string, error) {
+	pathsAllow, err := s.repo.GetPathAllowByUser(ctx, userId)
 	if err != nil {
 		return "", err
 	}

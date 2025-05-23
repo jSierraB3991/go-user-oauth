@@ -8,7 +8,7 @@ import (
 )
 
 func (s *GoOauthService) ExistsUserAdministrator(ctx context.Context) (bool, error) {
-	return s.repo.ExistsUserAdministrator()
+	return s.repo.ExistsUserAdministrator(ctx)
 }
 
 func (s *GoOauthService) CreateUserAdministrator(ctx context.Context, userEmail, userpassword string, attributes *map[string][]string) (string, error) {

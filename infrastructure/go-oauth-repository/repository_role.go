@@ -1,14 +1,22 @@
 package gooauthrepository
 
 import (
+	"context"
+
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	gooauthlibs "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_libs"
 )
 
-func (repo *Repository) GetRoleByName(roleName string) (*gooauthmodel.GoUserRole, error) {
+func (repo *Repository) GetRoleByName(ctx context.Context, roleName string) (*gooauthmodel.GoUserRole, error) {
+
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	var result gooauthmodel.GoUserRole
-	err := repo.db.Where("role_name = ?", roleName).Find(&result).Error
+	err = db.Where("role_name = ?", roleName).Find(&result).Error
 	if err != nil {
 		return nil, err
 	}
@@ -26,11 +34,15 @@ func (repo *Repository) MigrateO1() error {
 	return repo.db.Save(&gooauthmodel.GoUserRole{RoleName: gooauthlibs.ROLE_ADMIN}).Error
 }
 
-func (repo *Repository) GetRolesByUserAndRole(userId, roleId uint) ([]string, error) {
+func (repo *Repository) GetRolesByUserAndRole(ctx context.Context, userId, roleId uint) ([]string, error) {
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return nil, err
+	}
 	var result []string
 
 	var rolePath []gooauthmodel.GoUserRolePath
-	err := repo.db.Where("role_id = ?", roleId).Preload("GoUserPathBack").Find(&rolePath).Error
+	err = db.Where("role_id = ?", roleId).Preload("GoUserPathBack").Find(&rolePath).Error
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +52,7 @@ func (repo *Repository) GetRolesByUserAndRole(userId, roleId uint) ([]string, er
 	}
 
 	var userPath []gooauthmodel.GoUserUserPath
-	err = repo.db.Where("user_id = ?", userId).Preload("GoUserPathBack").Find(&userPath).Error
+	err = db.Where("user_id = ?", userId).Preload("GoUserPathBack").Find(&userPath).Error
 	if err != nil {
 		return nil, err
 	}
@@ -51,13 +63,13 @@ func (repo *Repository) GetRolesByUserAndRole(userId, roleId uint) ([]string, er
 	return result, nil
 }
 
-func (repo *Repository) GetPathAllowByUser(userId uint) ([]string, error) {
-	user, err := repo.GetUserById(userId)
+func (repo *Repository) GetPathAllowByUser(ctx context.Context, userId uint) ([]string, error) {
+	user, err := repo.GetUserById(ctx, userId)
 	if err != nil {
 		return nil, err
 	}
 
-	roles, err := repo.GetRolesByUserAndRole(userId, user.GoUserRoleId)
+	roles, err := repo.GetRolesByUserAndRole(ctx, userId, user.GoUserRoleId)
 	if err != nil {
 		return nil, err
 	}

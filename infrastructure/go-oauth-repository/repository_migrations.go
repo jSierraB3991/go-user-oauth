@@ -1,29 +1,51 @@
 package gooauthrepository
 
 import (
+	"context"
+	"fmt"
 	"log"
 	"time"
 
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
+	"gorm.io/gorm"
 
 	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 )
 
-func (repo *Repository) RunMigrations() error {
-	err := repo.Migrate00()
-	if err != nil {
-		return err
-	}
-	err = repo.RunMigrate("01", repo.MigrateO1)
-	if err != nil {
-		return err
-	}
+func (repo *Repository) RunMigrations(schemas []string) error {
 
-	err = repo.RunMigrate("02", repo.Migrate02)
-	if err != nil {
-		return err
+	for _, schema := range schemas {
+		// Asegúrate de que el schema existe antes de migrar
+		if err := ensureSchemaExists(repo.db, schema); err != nil {
+			return fmt.Errorf("schema '%s' creation failed: %w", schema, err)
+		}
+
+		dbTenant, err := repo.db.Session(&gorm.Session{NewDB: true}).DB()
+		if err != nil {
+			log.Fatalf("could not create session for %s: %v", schema, err)
+		}
+
+		// establecer el search_path de forma segura
+		_, err = dbTenant.Exec(`SET search_path TO ` + jsierralibs.QuoteIdentifier(schema)) // o con una query preparada
+		if err != nil {
+			log.Fatalf("could not set search_path for %s: %v", schema, err)
+		}
+
+		err = jsierralibs.RunMigrations(repo,
+			repo.Migrate00,
+			repo.MigrateO1,
+			repo.Migrate02)
+		if err != nil {
+			return err
+		}
+
+		log.Printf("✅ Migrated schema: %s", schema)
 	}
 	return nil
+}
+
+func ensureSchemaExists(db *gorm.DB, schema string) error {
+	return db.Exec(fmt.Sprintf("CREATE SCHEMA IF NOT EXISTS %s", jsierralibs.QuoteIdentifier(schema))).Error
 }
 
 func (repo *Repository) ValidateMigrate(version string) (bool, error) {
@@ -39,27 +61,8 @@ func (repo *Repository) ValidateMigrate(version string) (bool, error) {
 	return false, nil
 }
 
-func (repo *Repository) SaveVersion(version string) error {
+func (repo *Repository) SaveMigration(version string) error {
 	return repo.db.Save(&gooauthmodel.GoUserUserMigration{DateCreate: time.Now(), MigrationVersion: version}).Error
-}
-
-func (repo *Repository) RunMigrate(version string, migration func() error) error {
-
-	exist, err := repo.ValidateMigrate(version)
-	if err != nil {
-		return err
-	}
-
-	if exist {
-		return nil
-	}
-
-	err = migration()
-	if err != nil {
-		return err
-	}
-	log.Printf("SAVING MIGRATION %s", version)
-	return repo.SaveVersion(version)
 }
 
 func (repo *Repository) Migrate00() error {
@@ -75,16 +78,17 @@ func (repo *Repository) Migrate00() error {
 }
 
 func (repo *Repository) Migrate02() error {
-	return repo.CapitalizeNameInDatabase(1, 10)
+	ctx := context.Background()
+	return repo.capitalizeNameInDatabase(ctx, 1, 10)
 }
 
-func (repo *Repository) CapitalizeNameInDatabase(page, limit int) error {
+func (repo *Repository) capitalizeNameInDatabase(ctx context.Context, page, limit int) error {
 	if limit < page {
 		return nil
 	}
 	pagination := jsierralibs.Paggination{Limit: 10, Page: page}
 
-	userDataDb, err := repo.GetUsersPage(&pagination)
+	userDataDb, err := repo.GetUsersPage(ctx, &pagination)
 	if err != nil {
 		return err
 	}
@@ -94,10 +98,10 @@ func (repo *Repository) CapitalizeNameInDatabase(page, limit int) error {
 
 		v.Name = newName
 		v.SubName = newSubName
-		err = repo.UpdateUser(&v)
+		err = repo.UpdateUser(ctx, &v)
 		if err != nil {
 			return err
 		}
 	}
-	return repo.CapitalizeNameInDatabase(page+1, pagination.TotalPages)
+	return repo.capitalizeNameInDatabase(ctx, page+1, pagination.TotalPages)
 }

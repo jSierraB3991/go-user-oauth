@@ -9,7 +9,7 @@ import (
 )
 
 func (s *GoOauthService) UpdateUser(ctx context.Context, keyCloakUserId string, attributes *map[string][]string, req gooauthrequest.UpdateUserRequest) error {
-	data, err := s.repo.GetUserById(jsierralibs.GetUNumberForString(keyCloakUserId))
+	data, err := s.repo.GetUserById(ctx, jsierralibs.GetUNumberForString(keyCloakUserId))
 	if err != nil {
 		return err
 	}
@@ -17,12 +17,12 @@ func (s *GoOauthService) UpdateUser(ctx context.Context, keyCloakUserId string, 
 	data.Name = jsierralibs.CapitalizeName(req.FirstName)
 	data.SubName = jsierralibs.CapitalizeName(req.LastName)
 
-	err = s.repo.UpdateUser(data)
+	err = s.repo.UpdateUser(ctx, data)
 	if err != nil {
 		return err
 	}
 
-	attrData, err := s.repo.GetAttributtesByUserId(data.UserId)
+	attrData, err := s.repo.GetAttributtesByUserId(ctx, data.UserId)
 	if err != nil {
 		return err
 	}
@@ -30,5 +30,5 @@ func (s *GoOauthService) UpdateUser(ctx context.Context, keyCloakUserId string, 
 
 	finalAttr := gooauthmapper.GetAttributteUpdate(attrData, attrDataNews, data.UserId)
 
-	return s.repo.UpdateAttrr(finalAttr)
+	return s.repo.UpdateAttrr(ctx, finalAttr)
 }

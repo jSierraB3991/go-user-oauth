@@ -1,6 +1,7 @@
 package gooauthservice
 
 import (
+	"context"
 	"errors"
 	"strconv"
 	"strings"
@@ -12,8 +13,8 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
-func (s *GoOauthService) ValidateCodeOtp(req gooauthrequest.ValidateOauthCodeRequest) (bool, error) {
-	code, err := s.repo.GetSecretOauthCode(req.Username)
+func (s *GoOauthService) ValidateCodeOtp(ctx context.Context, req gooauthrequest.ValidateOauthCodeRequest) (bool, error) {
+	code, err := s.repo.GetSecretOauthCode(ctx, req.Username)
 	if err != nil {
 		return false, err
 	}
@@ -41,7 +42,7 @@ func (s *GoOauthService) ValidateCodeOtp(req gooauthrequest.ValidateOauthCodeReq
 	isValidCode := totp.Validate(req.Code, codeDecrypeted)
 
 	if isValidCode {
-		err = s.repo.ActiveTwoFactorOauth(req.Username)
+		err = s.repo.ActiveTwoFactorOauth(ctx, req.Username)
 		if err != nil {
 			return false, err
 		}

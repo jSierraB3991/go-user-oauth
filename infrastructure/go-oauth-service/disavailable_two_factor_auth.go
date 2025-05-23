@@ -1,6 +1,7 @@
 package gooauthservice
 
 import (
+	"context"
 	"errors"
 	"strings"
 	"time"
@@ -10,8 +11,8 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
-func (s *GoOauthService) DisAvailableTwoFactorAuth(userEmail, codeTwoFactor string) error {
-	user, err := s.repo.GetUserByEmail(userEmail)
+func (s *GoOauthService) DisAvailableTwoFactorAuth(ctx context.Context, userEmail, codeTwoFactor string) error {
+	user, err := s.repo.GetUserByEmail(ctx, userEmail)
 	if err != nil {
 		return err
 	}
@@ -39,5 +40,5 @@ func (s *GoOauthService) DisAvailableTwoFactorAuth(userEmail, codeTwoFactor stri
 
 	user.KeyOathApp = ""
 	user.IsActiveTwoFactorOauth = false
-	return s.repo.UpdateUser(user)
+	return s.repo.UpdateUser(ctx, user)
 }

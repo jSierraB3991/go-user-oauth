@@ -24,17 +24,17 @@ type GoOauthInterface interface {
 	ChangePassword(ctx context.Context, req gooauthrequest.ChangePasswordRequest) error
 	ValidateMailByUserId(ctx context.Context, userId string) error
 
-	GenerateQrForDobleOuath(userName string) (*gooauthrest.QrTwoOauthRest, error)
-	ValidateCodeOtp(req gooauthrequest.ValidateOauthCodeRequest) (bool, error)
+	GenerateQrForDobleOuath(ctx context.Context, userName string) (*gooauthrest.QrTwoOauthRest, error)
+	ValidateCodeOtp(ctx context.Context, req gooauthrequest.ValidateOauthCodeRequest) (bool, error)
 
-	GeneratetokenToValidate(userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error)
-	GenerateValidateMail(mailSend, keyToGenerateToken string) (string, error)
-	RemenberPassword(token, newPassword, codeTwoFactor string) error
-	IsActiveTwoFactorOauth(token string) (bool, error)
+	GeneratetokenToValidate(ctx context.Context, userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error)
+	GenerateValidateMail(ctx context.Context, mailSend, keyToGenerateToken string) (string, error)
+	RemenberPassword(ctx context.Context, token, newPassword, codeTwoFactor string) error
+	IsActiveTwoFactorOauth(ctx context.Context, token string) (bool, error)
 
-	IsActiveTwoFactor(user string) (bool, error)
-	DisAvailableTwoFactorAuth(userEmail, codeTwoFactor string) error
-	GetUsersByEmail(emails []string) ([]gooauthrest.User, error)
+	IsActiveTwoFactor(ctx context.Context, user string) (bool, error)
+	DisAvailableTwoFactorAuth(ctx context.Context, userEmail, codeTwoFactor string) error
+	GetUsersByEmail(ctx context.Context, emails []string) ([]gooauthrest.User, error)
 
 	CreateUserAdministrator(ctx context.Context, userEmail, userpassword string, attributes *map[string][]string) (string, error)
 	ExistsUserAdministrator(ctx context.Context) (bool, error)

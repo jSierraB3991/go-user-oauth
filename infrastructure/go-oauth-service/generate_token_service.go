@@ -1,15 +1,16 @@
 package gooauthservice
 
 import (
+	"context"
 	"time"
 
 	"github.com/golang-jwt/jwt"
 	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 )
 
-func (s *GoOauthService) GeneratetokenToValidate(userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error) {
+func (s *GoOauthService) GeneratetokenToValidate(ctx context.Context, userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error) {
 
-	dataUser, err := s.repo.GetUserById(jsierralibs.GetUNumberForString(userId))
+	dataUser, err := s.repo.GetUserById(ctx, jsierralibs.GetUNumberForString(userId))
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +25,7 @@ func (s *GoOauthService) GeneratetokenToValidate(userId, keyToGenerateToken stri
 	if err != nil {
 		return nil, err
 	}
-	err = s.repo.UpdateTokenMailValidatePassword(dataUser.UserId, tokenString)
+	err = s.repo.UpdateTokenMailValidatePassword(ctx, dataUser.UserId, tokenString)
 	if err != nil {
 		return nil, err
 	}

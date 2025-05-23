@@ -9,8 +9,8 @@ import (
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 )
 
-func (s *GoOauthService) GenerateValidateMail(mailSend, keyToGenerateToken string) (string, error) {
-	userData, err := s.repo.GetUserByEmail(mailSend)
+func (s *GoOauthService) GenerateValidateMail(ctx context.Context, mailSend, keyToGenerateToken string) (string, error) {
+	userData, err := s.repo.GetUserByEmail(ctx, mailSend)
 	if err != nil {
 		return "", err
 	}
@@ -25,7 +25,7 @@ func (s *GoOauthService) GenerateValidateMail(mailSend, keyToGenerateToken strin
 	if err != nil {
 		return "", err
 	}
-	err = s.repo.UpdateLinkMailValidateMail(userData.UserId, tokenString)
+	err = s.repo.UpdateLinkMailValidateMail(ctx, userData.UserId, tokenString)
 	if err != nil {
 		return "", err
 	}
@@ -38,7 +38,7 @@ func (s *GoOauthService) ValidateMailByUserId(ctx context.Context, userId string
 		return err
 	}
 
-	user, err := s.repo.GetUserById(uint(userInt))
+	user, err := s.repo.GetUserById(ctx, uint(userInt))
 	if err != nil {
 		return err
 	}
@@ -48,5 +48,5 @@ func (s *GoOauthService) ValidateMailByUserId(ctx context.Context, userId string
 
 	user.Enabled = true
 	user.LinkToValidateMail = ""
-	return s.repo.EnableUser(user.UserId)
+	return s.repo.EnableUser(ctx, user.UserId)
 }

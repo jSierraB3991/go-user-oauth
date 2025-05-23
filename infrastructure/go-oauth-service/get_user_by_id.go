@@ -13,12 +13,12 @@ func (s *GoOauthService) GetUserByUserId(ctx context.Context, userId string) (*g
 	if err != nil {
 		return nil, err
 	}
-	user, err := s.repo.GetUserById(uint(userInt))
+	user, err := s.repo.GetUserById(ctx, uint(userInt))
 	if err != nil {
 		return nil, err
 	}
 
-	attributtes, err := s.repo.GetAttributtesByUserId(uint(userInt))
+	attributtes, err := s.repo.GetAttributtesByUserId(ctx, uint(userInt))
 	if err != nil {
 		return nil, err
 	}

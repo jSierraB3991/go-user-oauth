@@ -1,6 +1,7 @@
 package gooauthservice
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -10,7 +11,7 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
-func (s *GoOauthService) GenerateQrForDobleOuath(userName string) (*gooauthrest.QrTwoOauthRest, error) {
+func (s *GoOauthService) GenerateQrForDobleOuath(ctx context.Context, userName string) (*gooauthrest.QrTwoOauthRest, error) {
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:      s.appName,
 		AccountName: userName,
@@ -27,7 +28,7 @@ func (s *GoOauthService) GenerateQrForDobleOuath(userName string) (*gooauthrest.
 	if err != nil {
 		return nil, err
 	}
-	err = s.repo.SaveSecretToUser(userName, secretEncrypt)
+	err = s.repo.SaveSecretToUser(ctx, userName, secretEncrypt)
 	if err != nil {
 		return nil, err
 	}
@@ -43,8 +44,8 @@ func (s *GoOauthService) GenerateQrForDobleOuath(userName string) (*gooauthrest.
 	}, nil
 }
 
-func (s *GoOauthService) IsActiveTwoFactor(user string) (bool, error) {
-	userData, err := s.repo.GetUserByEmail(user)
+func (s *GoOauthService) IsActiveTwoFactor(ctx context.Context, user string) (bool, error) {
+	userData, err := s.repo.GetUserByEmail(ctx, user)
 	if err != nil {
 		return false, err
 	}

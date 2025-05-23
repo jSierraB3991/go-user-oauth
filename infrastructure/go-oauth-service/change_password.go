@@ -9,7 +9,7 @@ import (
 )
 
 func (s *GoOauthService) ChangePassword(ctx context.Context, req gooauthrequest.ChangePasswordRequest) error {
-	dataUser, err := s.repo.GetUserById(jsierralibs.GetUNumberForString(req.KeycloakUserId))
+	dataUser, err := s.repo.GetUserById(ctx, jsierralibs.GetUNumberForString(req.KeycloakUserId))
 	if err != nil {
 		return err
 	}
@@ -24,5 +24,5 @@ func (s *GoOauthService) ChangePassword(ctx context.Context, req gooauthrequest.
 		return err
 	}
 	dataUser.Password = encryptPasword
-	return s.repo.UpdateUser(dataUser)
+	return s.repo.UpdateUser(ctx, dataUser)
 }

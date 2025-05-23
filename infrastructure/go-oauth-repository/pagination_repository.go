@@ -1,16 +1,20 @@
 package gooauthrepository
 
 import (
+	"context"
 	"math"
 
 	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 	"gorm.io/gorm"
 )
 
-func (repo *Repository) paginate_with_param(value interface{}, page *jsierralibs.Paggination,
+func (repo *Repository) paginate_with_param(ctx context.Context, value interface{}, page *jsierralibs.Paggination,
 	args []jsierralibs.PagginationParam, preloads []jsierralibs.PreloadParams) func(db *gorm.DB) *gorm.DB {
+
+	db, _ := repo.WithTenant(ctx)
+
 	var totalRows int64
-	accountData := repo.db.Model(value)
+	accountData := db.Model(value)
 	if len(preloads) > 0 {
 		for _, arg := range preloads {
 			if arg.PagginationParam.Where == "" {
