@@ -9,7 +9,8 @@ import (
 )
 
 type Repository struct {
-	db *gorm.DB
+	db                  *gorm.DB
+	schemaForMigrations string
 }
 
 func InitiateRepo(db *gorm.DB) *Repository {

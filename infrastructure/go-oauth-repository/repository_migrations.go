@@ -29,7 +29,10 @@ func (repo *Repository) RunMigrations(schemas []string) error {
 		_, err = dbTenant.Exec(`SET search_path TO ` + jsierralibs.QuoteIdentifier(schema)) // o con una query preparada
 		if err != nil {
 			log.Fatalf("could not set search_path for %s: %v", schema, err)
+
 		}
+
+		repo.schemaForMigrations = schema
 
 		err = jsierralibs.RunMigrations(repo,
 			repo.Migrate00,
@@ -78,7 +81,7 @@ func (repo *Repository) Migrate00() error {
 }
 
 func (repo *Repository) Migrate02() error {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), jsierralibs.ContextTenantKey, repo.schemaForMigrations)
 	return repo.capitalizeNameInDatabase(ctx, 1, 10)
 }
 
