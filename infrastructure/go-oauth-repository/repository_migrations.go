@@ -34,8 +34,11 @@ func (repo *Repository) RunMigrations(schemas []string) error {
 
 		repo.schemaForMigrations = schema
 
+		err = repo.Migrate00()
+		if err != nil {
+			return err
+		}
 		err = jsierralibs.RunMigrations(repo,
-			repo.Migrate00,
 			repo.MigrateO1,
 			repo.Migrate02)
 		if err != nil {
