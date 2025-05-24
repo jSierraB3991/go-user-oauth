@@ -18,20 +18,28 @@ func InitiateRepo(db *gorm.DB) *Repository {
 		db: db,
 	}
 }
-
-func (p *Repository) WithTenant(ctx context.Context) (*gorm.DB, error) {
-
+func (repo *Repository) WithTenant(ctx context.Context) (*gorm.DB, error) {
 	tenant, err := jsierralibs.WithTenant(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	// Creamos una nueva sesión segura
-	tx := p.db.Session(&gorm.Session{
-		NewDB: true,
+	tx := repo.db.Session(&gorm.Session{
+		NewDB:       true,
+		PrepareStmt: false,
 	})
-	// Ejecutar con interpolación controlada (porque no se puede parametrizar)
-	if err := tx.Exec(fmt.Sprintf("SET search_path TO %s", *tenant)).Error; err != nil {
+
+	var currentSearchPath string
+	if err := tx.Raw("SHOW search_path").Scan(&currentSearchPath).Error; err != nil {
+		return nil, err
+	}
+
+	if "\""+currentSearchPath+"\"" == *tenant || currentSearchPath == *tenant {
+		return tx, nil
+	}
+
+	fmt.Println("Switching schema to:", *tenant)
+	if err := tx.Exec(fmt.Sprintf(`SET search_path TO %s`, *tenant)).Error; err != nil {
 		return nil, err
 	}
 
