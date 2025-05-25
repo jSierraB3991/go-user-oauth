@@ -21,7 +21,8 @@ func InitiateRepo(db *gorm.DB) *Repository {
 func (repo *Repository) WithTenant(ctx context.Context) (*gorm.DB, error) {
 	tenant, err := jsierralibs.WithTenant(ctx)
 	if err != nil {
-		return nil, err
+		tenantPublic := "public"
+		tenant = &tenantPublic
 	}
 
 	tx := repo.db.Session(&gorm.Session{
