@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type GoUserUser struct {
 	gorm.Model
 	UserId   uint   `gorm:"column:id"`
-	Email    string `gorm:"column:email;not null"`
+	Email    string `gorm:"column:email;not null;unique"`
 	Name     string `gorm:"column:name;not null"`
 	SubName  string `gorm:"column:sub_name"`
 	Enabled  bool   `gorm:"column:enabled;not null"`
