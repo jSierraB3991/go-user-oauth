@@ -41,4 +41,5 @@ type GoOauthInterface interface {
 	ExistsUserAdministrator(ctx context.Context) (bool, error)
 
 	ChangeEmailByAdmin(ctx context.Context, kUserId, newEmail string) error
+	ChangePasswordToGeneric(ctx context.Context, kUserId string) error
 }
