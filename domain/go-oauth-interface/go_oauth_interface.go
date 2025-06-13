@@ -39,4 +39,6 @@ type GoOauthInterface interface {
 
 	CreateUserAdministrator(ctx context.Context, userEmail, userpassword, appName string, attributes *map[string][]string) (string, error)
 	ExistsUserAdministrator(ctx context.Context) (bool, error)
+
+	ChangeEmailByAdmin(ctx context.Context, kUserId, newEmail string) error
 }
