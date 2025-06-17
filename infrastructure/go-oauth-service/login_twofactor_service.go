@@ -3,6 +3,7 @@ package gooauthservice
 import (
 	"context"
 	"errors"
+	"log"
 	"strings"
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
@@ -11,7 +12,7 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
-func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, userName, codeTwoFactor string) (*gooauthrest.JWT, error) {
+func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, userName, codeTwoFactor, ip, userAgent string) (*gooauthrest.JWT, error) {
 	user, err := s.repo.GetUserByEmail(ctx, userName)
 	if err != nil {
 		return nil, err
@@ -41,6 +42,11 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, userName, codeT
 	tokenString, err := s.GetJwtToken(ctx, exp, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName)
 	if err != nil {
 		return nil, err
+	}
+
+	err = s.saveDataLogin(ctx, ip, userAgent, tokenString, user.UserId, false)
+	if err != nil {
+		log.Printf("ERROR: SAING DATA LOGIN %v", err)
 	}
 	return &gooauthrest.JWT{
 		AccessToken:  tokenString,
