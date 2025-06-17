@@ -27,7 +27,7 @@ func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, token
 		}
 	}
 
-	request := gooauthmodel.UserDataLogin{
+	request := gooauthmodel.GoUserDataLogin{
 		Ip:                  ip,
 		UserAgent:           userAgent,
 		IsLoginWithPassword: isLoginWithPassword,

@@ -6,7 +6,7 @@ import (
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 )
 
-func (repo *Repository) SaveDataLogin(ctx context.Context, dataLogin gooauthmodel.UserDataLogin) error {
+func (repo *Repository) SaveDataLogin(ctx context.Context, dataLogin gooauthmodel.GoUserDataLogin) error {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {
 		return err

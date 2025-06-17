@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type UserDataLogin struct {
+type GoUserDataLogin struct {
 	gorm.Model
 	UserDataLoginId     uint      `gorm:"column:id"`
 	Ip                  string    `gorm:"column:ip"`
