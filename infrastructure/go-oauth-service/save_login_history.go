@@ -10,6 +10,7 @@ import (
 
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
+	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, token string, userId uint, isLoginWithPassword bool) error {
@@ -27,14 +28,20 @@ func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, token
 		}
 	}
 
+	ipEncrypt, err := jsierralibs.Encrypt(ip, s.aesKeyForEncrypt)
+	if err != nil {
+		return err
+	}
+
 	request := gooauthmodel.GoUserDataLogin{
-		Ip:                  ip,
+		Ip:                  ipEncrypt,
 		UserAgent:           userAgent,
 		IsLoginWithPassword: isLoginWithPassword,
 		Token:               token,
 		Fecha:               timestamp,
 		IpResponse:          ipInfo,
 		GoUserUserId:        userId,
+		IsAvailable:         true,
 	}
 	return s.repo.SaveDataLogin(ctx, request)
 }

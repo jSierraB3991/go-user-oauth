@@ -37,7 +37,7 @@ func (s *GoOauthService) LoginUser(ctx context.Context, userName, password, ip, 
 		}, nil
 	}
 
-	err = s.saveDataLogin(ctx, ip, userAgent, tokenString, user.UserId, false)
+	err = s.saveDataLogin(ctx, ip, userAgent, tokenString, user.UserId, true)
 	if err != nil {
 		log.Printf("ERROR: SAING DATA LOGIN %v", err)
 	}
