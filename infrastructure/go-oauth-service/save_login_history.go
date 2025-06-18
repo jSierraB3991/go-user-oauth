@@ -66,6 +66,15 @@ func (s *GoOauthService) saveInvalidDataLogin(ctx context.Context, ip, userAgent
 		return err
 	}
 
+	emailencrypt := userEmail
+	if jsierralibs.RemoveSpace(userEmail) != "" {
+		emailEncryptPoint, err := jsierralibs.Encrypt(ip, s.aesKeyForEncrypt)
+		if err != nil {
+			return err
+		}
+		emailencrypt = emailEncryptPoint
+	}
+
 	tenant, _ := jsierralibs.FromContext(ctx)
 	request := gooauthmodel.GoUserInvalidGoAuth{
 		Ip:                  ipEncrypt,
@@ -74,7 +83,7 @@ func (s *GoOauthService) saveInvalidDataLogin(ctx context.Context, ip, userAgent
 		Motive:              motive,
 		Fecha:               timestamp,
 		IpResponse:          ipInfo,
-		Email:               userEmail,
+		Email:               emailencrypt,
 		TenantId:            tenant,
 		IsUtil:              true,
 	}
