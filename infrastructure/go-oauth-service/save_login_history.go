@@ -68,11 +68,19 @@ func (s *GoOauthService) saveInvalidDataLogin(ctx context.Context, ip, userAgent
 
 	emailencrypt := userEmail
 	if jsierralibs.RemoveSpace(userEmail) != "" {
-		emailEncryptPoint, err := jsierralibs.Encrypt(ip, s.aesKeyForEncrypt)
+		emailEncryptPoint, err := jsierralibs.Encrypt(userEmail, s.aesKeyForEncrypt)
 		if err != nil {
 			return err
 		}
 		emailencrypt = emailEncryptPoint
+	}
+	motiveencrypt := motive
+	if jsierralibs.RemoveSpace(motive) != "" {
+		motiveencryptPoint, err := jsierralibs.Encrypt(motive, s.aesKeyForEncrypt)
+		if err != nil {
+			return err
+		}
+		motiveencrypt = motiveencryptPoint
 	}
 
 	tenant, _ := jsierralibs.FromContext(ctx)
@@ -80,7 +88,7 @@ func (s *GoOauthService) saveInvalidDataLogin(ctx context.Context, ip, userAgent
 		Ip:                  ipEncrypt,
 		UserAgent:           userAgent,
 		IsForTwoFactorOauth: isTwoFactor,
-		Motive:              motive,
+		Motive:              motiveencrypt,
 		Fecha:               timestamp,
 		IpResponse:          ipInfo,
 		Email:               emailencrypt,
