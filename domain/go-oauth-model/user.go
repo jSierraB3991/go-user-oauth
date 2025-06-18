@@ -1,6 +1,8 @@
 package gooauthmodel
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type GoUserUser struct {
 	gorm.Model
@@ -23,12 +25,6 @@ type GoUserUser struct {
 	TokenChangePassword string `gorm:"column:token_to_change_password"`
 	LinkToValidateMail  string `gorm:"column:link_to_validate_mail"`
 }
-
-type GiUserInvalidGoAuth struct {
-	gorm.Model
-	Email string `gorm:"column:email;not null"`
-}
-
 type GoUserUserAttributtes struct {
 	gorm.Model
 	UserAttributteId uint `gorm:"column:id"`

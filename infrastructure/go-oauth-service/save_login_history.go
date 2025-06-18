@@ -46,6 +46,41 @@ func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, token
 	return s.repo.SaveDataLogin(ctx, request)
 }
 
+func (s *GoOauthService) saveInvalidDataLogin(ctx context.Context, ip, userAgent, userEmail, motive string, isTwoFactor bool) error {
+	timestamp := time.Now().UTC()
+	location, err := getIPLocation(ip)
+	if err != nil {
+		location = &gooauthrequest.IPInfoRequest{Country: "Desconocido", City: "Desconocido"}
+	}
+
+	var ipInfo string
+	if location != nil {
+		locationByte, err := json.Marshal(location)
+		if err == nil {
+			ipInfo = string(locationByte)
+		}
+	}
+
+	ipEncrypt, err := jsierralibs.Encrypt(ip, s.aesKeyForEncrypt)
+	if err != nil {
+		return err
+	}
+
+	tenant, _ := jsierralibs.FromContext(ctx)
+	request := gooauthmodel.GoUserInvalidGoAuth{
+		Ip:                  ipEncrypt,
+		UserAgent:           userAgent,
+		IsForTwoFactorOauth: isTwoFactor,
+		Motive:              motive,
+		Fecha:               timestamp,
+		IpResponse:          ipInfo,
+		Email:               userEmail,
+		TenantId:            tenant,
+		IsUtil:              true,
+	}
+	return s.repo.SaveInvalidLogin(ctx, request)
+}
+
 func getIPLocation(ip string) (*gooauthrequest.IPInfoRequest, error) {
 	url := fmt.Sprintf("http://ip-api.com/json/%s", ip)
 	resp, err := http.Get(url)

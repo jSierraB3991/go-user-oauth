@@ -6,6 +6,7 @@ type GoLoginRequest struct {
 	Ip         string
 	UserAgent  string
 	IsRemenber bool
+	TenantId   string
 }
 
 type GoLoginRequestTwoFactor struct {
