@@ -24,6 +24,11 @@ type GoUserUser struct {
 	LinkToValidateMail  string `gorm:"column:link_to_validate_mail"`
 }
 
+type GiUserInvalidGoAuth struct {
+	gorm.Model
+	Email string `gorm:"column:email;not null"`
+}
+
 type GoUserUserAttributtes struct {
 	gorm.Model
 	UserAttributteId uint `gorm:"column:id"`

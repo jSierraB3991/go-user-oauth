@@ -5,12 +5,13 @@ import (
 	"log"
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
+	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
 )
 
-func (s *GoOauthService) LoginUser(ctx context.Context, userName, password, ip, userAgent string) (*gooauthrest.JWT, error) {
+func (s *GoOauthService) LoginUser(ctx context.Context, req gooauthrequest.GoLoginRequest) (*gooauthrest.JWT, error) {
 
-	user, err := s.repo.GetUserByEmail(ctx, userName)
+	user, err := s.repo.GetUserByEmail(ctx, req.UserName)
 	if err != nil {
 		return nil, err
 	}
@@ -19,14 +20,12 @@ func (s *GoOauthService) LoginUser(ctx context.Context, userName, password, ip, 
 		return nil, gooautherror.UserNotEnabledError{}
 	}
 
-	isVerify := s.passwordService.VerifyPassword(user.Password, password)
+	isVerify := s.passwordService.VerifyPassword(user.Password, req.Password)
 	if !isVerify {
 		return nil, gooautherror.InvalidUserOrPassword{}
 	}
 
-	exp := s.GetExp()
-
-	tokenString, err := s.GetJwtToken(ctx, exp, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName)
+	tokenString, exp, err := s.GetJwtToken(ctx, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName, req.IsRemenber)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +36,7 @@ func (s *GoOauthService) LoginUser(ctx context.Context, userName, password, ip, 
 		}, nil
 	}
 
-	err = s.saveDataLogin(ctx, ip, userAgent, tokenString, user.UserId, true)
+	err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, tokenString, user.UserId, true)
 	if err != nil {
 		log.Printf("ERROR: SAING DATA LOGIN %v", err)
 	}

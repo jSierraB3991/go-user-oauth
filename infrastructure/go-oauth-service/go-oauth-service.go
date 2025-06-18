@@ -51,30 +51,35 @@ func (GoOauthService) ErrorHandler() error {
 	return gooautherror.InactiveToken{}
 }
 
-func (s *GoOauthService) GetJwtToken(ctx context.Context, exp int, userId, roleId uint, email, roleName string) (string, error) {
+func (s *GoOauthService) GetJwtToken(ctx context.Context, userId, roleId uint, email, roleName string, remenber bool) (string, int, error) {
+
+	exp := int(0)
 	pathsAllow, err := s.repo.GetPathAllowByUser(ctx, userId)
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
 	claims := jwt.MapClaims{
 		"user_id":     userId,
-		"exp":         exp,
 		"paths_allow": pathsAllow,
 		"iat":         time.Now().Unix(),
 		"email":       email,
 		"role_name":   roleName,
 		"role_id":     roleId,
 	}
+	if !remenber {
+		exp = GetExp()
+		claims["exp"] = exp
+	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	tokenString, err := token.SignedString([]byte(s.secretForJwt))
 	if err != nil {
-		return "", err
+		return "", 0, err
 	}
-	return tokenString, nil
+	return tokenString, exp, nil
 }
 
-func (s *GoOauthService) GetExp() int {
+func GetExp() int {
 	return int(time.Now().Add(24 * time.Hour).Unix())
 }
