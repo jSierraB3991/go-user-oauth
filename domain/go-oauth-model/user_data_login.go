@@ -24,7 +24,7 @@ type GoUserInvalidGoAuth struct {
 	gorm.Model
 	Email               string    `gorm:"column:email"`
 	Ip                  string    `gorm:"column:ip"`
-	Motive              string    `gorm:"column:ip;not null"`
+	Motive              string    `gorm:"column:motive;not null"`
 	IsUtil              bool      `gorm:"column:is_util;not null"`
 	Fecha               time.Time `gorm:"column:fecha;not null"`
 	UserAgent           string    `gorm:"column:user_agent;not null"`
