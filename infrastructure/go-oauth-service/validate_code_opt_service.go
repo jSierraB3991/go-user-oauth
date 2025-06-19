@@ -14,7 +14,8 @@ import (
 )
 
 func (s *GoOauthService) ValidateCodeOtp(ctx context.Context, req gooauthrequest.ValidateOauthCodeRequest) (bool, error) {
-	code, err := s.repo.GetSecretOauthCode(ctx, req.Username)
+	userName := strings.ToLower(req.Username)
+	code, err := s.repo.GetSecretOauthCode(ctx, userName)
 	if err != nil {
 		return false, err
 	}
@@ -42,7 +43,7 @@ func (s *GoOauthService) ValidateCodeOtp(ctx context.Context, req gooauthrequest
 	isValidCode := totp.Validate(req.Code, codeDecrypeted)
 
 	if isValidCode {
-		err = s.repo.ActiveTwoFactorOauth(ctx, req.Username)
+		err = s.repo.ActiveTwoFactorOauth(ctx, userName)
 		if err != nil {
 			return false, err
 		}

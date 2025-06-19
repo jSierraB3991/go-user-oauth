@@ -12,6 +12,8 @@ import (
 )
 
 func (s *GoOauthService) GenerateQrForDobleOuath(ctx context.Context, userName, appName, imageUrl string) (*gooauthrest.QrTwoOauthRest, error) {
+	userName = strings.ToLower(userName)
+
 	key, err := totp.Generate(totp.GenerateOpts{
 		Issuer:      appName,
 		AccountName: userName,

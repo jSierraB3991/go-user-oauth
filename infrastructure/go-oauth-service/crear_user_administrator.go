@@ -2,6 +2,7 @@ package gooauthservice
 
 import (
 	"context"
+	"strings"
 
 	gooauthlibs "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_libs"
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
@@ -23,8 +24,8 @@ func (s *GoOauthService) CreateUserAdministrator(ctx context.Context, userEmail,
 	}
 
 	kUser := gooauthrequest.CreateUser{
-		Email:       userEmail,
-		UserName:    userEmail,
+		Email:       strings.ToLower(userEmail),
+		UserName:    strings.ToLower(userEmail),
 		Password:    userpassword,
 		FirstName:   "Admin",
 		LastName:    appName,

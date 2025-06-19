@@ -12,7 +12,7 @@ import (
 )
 
 func (s *GoOauthService) DisAvailableTwoFactorAuth(ctx context.Context, userEmail, codeTwoFactor string) error {
-	user, err := s.repo.GetUserByEmail(ctx, userEmail)
+	user, err := s.repo.GetUserByEmail(ctx, strings.ToLower(userEmail))
 	if err != nil {
 		return err
 	}

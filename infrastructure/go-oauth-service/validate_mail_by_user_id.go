@@ -3,6 +3,7 @@ package gooauthservice
 import (
 	"context"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -10,7 +11,7 @@ import (
 )
 
 func (s *GoOauthService) GenerateValidateMail(ctx context.Context, mailSend, keyToGenerateToken string) (string, error) {
-	userData, err := s.repo.GetUserByEmail(ctx, mailSend)
+	userData, err := s.repo.GetUserByEmail(ctx, strings.ToLower(mailSend))
 	if err != nil {
 		return "", err
 	}

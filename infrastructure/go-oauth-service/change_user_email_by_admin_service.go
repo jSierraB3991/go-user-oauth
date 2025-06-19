@@ -2,6 +2,7 @@ package gooauthservice
 
 import (
 	"context"
+	"strings"
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	eliotlibs "github.com/jSierraB3991/jsierra-libs"
@@ -18,6 +19,6 @@ func (s *GoOauthService) ChangeEmailByAdmin(ctx context.Context, kUserId, newEma
 		return gooautherror.ThisUserNotExistsError{}
 	}
 
-	user.Email = newEmail
+	user.Email = strings.ToLower(newEmail)
 	return s.repo.UpdateUser(ctx, user)
 }
