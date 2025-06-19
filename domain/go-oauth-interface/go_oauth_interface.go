@@ -7,6 +7,7 @@ import (
 
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 type GoOauthInterface interface {
@@ -42,4 +43,6 @@ type GoOauthInterface interface {
 
 	ChangeEmailByAdmin(ctx context.Context, kUserId, newEmail string) error
 	ChangePasswordToGeneric(ctx context.Context, kUserId string) error
+
+	GetInvalidLogins(ctx context.Context, page *eliotlibs.Paggination) (*gooauthrest.InvalidLoginRestPagg, error)
 }
