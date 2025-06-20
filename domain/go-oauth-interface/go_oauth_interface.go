@@ -22,6 +22,8 @@ type GoOauthInterface interface {
 
 	GetUserByUserId(ctx context.Context, keycloakId string) (*gooauthrest.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*gooauthrest.User, error)
+	GetUserByName(ctx context.Context, name string, page *eliotlibs.Paggination) ([]string, error)
+
 	GetUsersByUsersId(ctx context.Context, keycloakUsersId []string) ([]gooauthrest.User, error)
 	ChangePassword(ctx context.Context, req gooauthrequest.ChangePasswordRequest) error
 	ValidateMailByUserId(ctx context.Context, userId string) error

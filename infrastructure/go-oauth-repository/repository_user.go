@@ -235,6 +235,25 @@ func (repo *Repository) GetUsersPage(ctx context.Context, page *jsierralibs.Pagg
 	return result, nil
 }
 
+func (repo *Repository) GetUsersByNamePage(ctx context.Context, page *jsierralibs.Paggination, nameLike string) ([]gooauthmodel.GoUserUser, error) {
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []gooauthmodel.GoUserUser
+	params := []jsierralibs.PagginationParam{{
+		Where: "name like ?1 OR sub_name like ?1",
+		Data:  "%" + nameLike + "%",
+	}}
+	preloads := []jsierralibs.PreloadParams{}
+	err = db.Scopes(repo.paginate_with_param(ctx, result, page, params, preloads)).Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 func (repo *Repository) ExistsUserAdministrator(ctx context.Context) (bool, error) {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {
