@@ -2,6 +2,7 @@ package gooauthrepository
 
 import (
 	"context"
+	"database/sql"
 
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
@@ -240,11 +241,11 @@ func (repo *Repository) GetUsersByNamePage(ctx context.Context, page *jsierralib
 	if err != nil {
 		return nil, err
 	}
-
+	val := "%" + nameLike + "%"
 	var result []gooauthmodel.GoUserUser
 	params := []jsierralibs.PagginationParam{{
-		Where: "name like ?1 OR sub_name like ?1",
-		Data:  []interface{}{"%" + nameLike + "%", "%" + nameLike + "%"},
+		Where: "name LIKE @val OR sub_name LIKE @val",
+		Data:  []interface{}{sql.Named("val", val)},
 	}}
 	preloads := []jsierralibs.PreloadParams{}
 	err = db.Scopes(repo.paginate_with_param(ctx, result, page, params, preloads)).Find(&result).Error
