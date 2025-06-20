@@ -3,9 +3,11 @@ package gooauthrepository
 import (
 	"context"
 	"math"
+	"strings"
 
 	jsierralibs "github.com/jSierraB3991/jsierra-libs"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 func (repo *Repository) paginate_with_param(ctx context.Context, value interface{}, page *jsierralibs.Paggination,
@@ -26,7 +28,16 @@ func (repo *Repository) paginate_with_param(ctx context.Context, value interface
 	}
 	if len(args) > 0 {
 		for _, arg := range args {
-			accountData.Where(arg.Where, arg.Data)
+			if strings.Contains(arg.Where, "@") {
+				// Usamos clause.Expr para named params
+				accountData = accountData.Where(clause.Expr{
+					SQL:  arg.Where,
+					Vars: arg.Data, // aquí va tu []interface{}{ sql.Named("val", val) }
+				})
+			} else {
+				// Caso normal con ? y unpacking
+				accountData = accountData.Where(arg.Where, arg.Data...)
+			}
 		}
 	}
 	accountData.Count(&totalRows)
@@ -50,7 +61,16 @@ func (repo *Repository) paginate_with_param(ctx context.Context, value interface
 
 		if len(args) > 0 {
 			for _, arg := range args {
-				data.Where(arg.Where, arg.Data)
+				if strings.Contains(arg.Where, "@") {
+					// Usamos clause.Expr para named params
+					accountData = accountData.Where(clause.Expr{
+						SQL:  arg.Where,
+						Vars: arg.Data, // aquí va tu []interface{}{ sql.Named("val", val) }
+					})
+				} else {
+					// Caso normal con ? y unpacking
+					accountData = accountData.Where(arg.Where, arg.Data...)
+				}
 			}
 		}
 		return data
