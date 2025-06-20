@@ -63,13 +63,13 @@ func (repo *Repository) paginate_with_param(ctx context.Context, value interface
 			for _, arg := range args {
 				if strings.Contains(arg.Where, "@") {
 					// Usamos clause.Expr para named params
-					accountData = accountData.Where(clause.Expr{
+					db = db.Where(clause.Expr{
 						SQL:  arg.Where,
 						Vars: arg.Data, // aquí va tu []interface{}{ sql.Named("val", val) }
 					})
 				} else {
 					// Caso normal con ? y unpacking
-					accountData = accountData.Where(arg.Where, arg.Data...)
+					db = db.Where(arg.Where, arg.Data...)
 				}
 			}
 		}
