@@ -243,7 +243,7 @@ func (repo *Repository) GetUsersByNamePage(ctx context.Context, page *jsierralib
 	val := "%" + nameLike + "%"
 	var result []gooauthmodel.GoUserUser
 	params := []jsierralibs.PagginationParam{{
-		Where: "name LIKE $1 OR sub_name LIKE $1",
+		Where: "name ILIKE $1 OR sub_name ILIKE $1",
 		Data:  []interface{}{val},
 	}}
 	preloads := []jsierralibs.PreloadParams{}
