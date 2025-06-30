@@ -32,12 +32,16 @@ func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, token
 	if err != nil {
 		return err
 	}
+	tokenEncrypt, err := jsierralibs.Encrypt(token, s.aesKeyForEncrypt)
+	if err != nil {
+		return err
+	}
 
 	request := gooauthmodel.GoUserDataLogin{
 		Ip:                  ipEncrypt,
 		UserAgent:           userAgent,
 		IsLoginWithPassword: isLoginWithPassword,
-		Token:               token,
+		Token:               tokenEncrypt,
 		Fecha:               timestamp,
 		IpResponse:          ipInfo,
 		GoUserUserId:        userId,
