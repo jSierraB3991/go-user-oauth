@@ -9,6 +9,7 @@ import (
 )
 
 func (s *GoOauthService) ChangeEmailByAdmin(ctx context.Context, kUserId, newEmail string) error {
+	newEmail = eliotlibs.RemoveSpace(newEmail)
 	userId := eliotlibs.GetUNumberForString(kUserId)
 	user, err := s.repo.GetUserById(ctx, userId)
 	if err != nil {
@@ -19,6 +20,7 @@ func (s *GoOauthService) ChangeEmailByAdmin(ctx context.Context, kUserId, newEma
 		return gooautherror.ThisUserNotExistsError{}
 	}
 
+	err = s.repo.VerifyIfEmailInAnotherAccont(ctx, newEmail)
 	user.Email = strings.ToLower(newEmail)
 	return s.repo.UpdateUser(ctx, user)
 }
