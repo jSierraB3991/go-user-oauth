@@ -10,4 +10,6 @@ const (
 	BEARER_HEADER_PREFIX = "Bearer "
 
 	EMAIL_CONSTANT = "email"
+
+	ADMIN_ROUTES = "/admin"
 )

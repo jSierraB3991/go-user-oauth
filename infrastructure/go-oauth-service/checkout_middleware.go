@@ -45,6 +45,29 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 			log.Printf("Error save role path %v", err)
 		}
 	}
+
+	if strings.Contains(path, gooauthlibs.ADMIN_ROUTES) {
+		emailUser, err := GetHeaderJwtToken(requets, "email")
+		if err != nil {
+			log.Printf("Error GET EMAIL %v", err)
+			return false
+		}
+
+		userData, err := s.repo.GetUserByEmail(ctx, emailUser)
+		if err != nil {
+			log.Printf("Error getting user by email %v", err)
+			return false
+		}
+
+		if userData == nil {
+			log.Printf("User not found with email %s", emailUser)
+			return false
+		}
+		if userData.GoUserRole.RoleName != gooauthlibs.ROLE_ADMIN {
+			log.Printf("User %s with role %s tried to access admin route %s", userData.Name+" "+userData.SubName, roleName, path)
+			return false
+		}
+	}
 	return false
 }
 
