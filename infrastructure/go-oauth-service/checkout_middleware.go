@@ -71,7 +71,6 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 	}
 	body, err := io.ReadAll(requets.Body)
 	if err == nil {
-		defer requets.Body.Close()
 		log.Println("Body recibido:", string(body))
 	}
 	return false
