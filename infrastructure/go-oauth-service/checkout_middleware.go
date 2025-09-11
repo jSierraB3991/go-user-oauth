@@ -1,6 +1,7 @@
 package gooauthservice
 
 import (
+	"bytes"
 	"io"
 	"log"
 	"net/http"
@@ -69,10 +70,13 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 			return false
 		}
 	}
-	body, err := io.ReadAll(requets.Body)
+	bodyBytes, err := io.ReadAll(requets.Body)
 	if err == nil {
-		log.Println("Body recibido:", string(body))
+		// Restaurar el body para que se pueda usar de nuevo
+		requets.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+		log.Println("Body recibido:", string(string(bodyBytes)))
 	}
+
 	return false
 }
 
