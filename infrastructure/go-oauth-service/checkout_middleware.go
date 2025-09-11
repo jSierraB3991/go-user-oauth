@@ -1,6 +1,7 @@
 package gooauthservice
 
 import (
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -67,6 +68,11 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 			log.Printf("User %s with role %s tried to access admin route %s", userData.Name+" "+userData.SubName, roleName, path)
 			return false
 		}
+	}
+	body, err := io.ReadAll(requets.Body)
+	if err == nil {
+		defer requets.Body.Close()
+		log.Println("Body recibido:", string(body))
 	}
 	return false
 }

@@ -21,6 +21,9 @@ func (s *GoOauthService) ChangeEmailByAdmin(ctx context.Context, kUserId, newEma
 	}
 
 	err = s.repo.VerifyIfEmailInAnotherAccont(ctx, newEmail)
+	if err != nil {
+		return err
+	}
 	user.Email = strings.ToLower(newEmail)
 	return s.repo.UpdateUser(ctx, user)
 }
