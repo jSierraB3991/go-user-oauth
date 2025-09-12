@@ -13,7 +13,7 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
-func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, req gooauthrequest.GoLoginRequestTwoFactor) (*gooauthrest.JWT, error) {
+func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, req gooauthrequest.GoLoginRequestTwoFactor, saveLoginHistory bool) (*gooauthrest.JWT, error) {
 	userName := strings.ToLower(req.UserName)
 
 	user, err := s.repo.GetUserByEmail(ctx, userName)
@@ -52,9 +52,11 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, req gooauthrequ
 		return nil, err
 	}
 
-	err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, tokenString, user.UserId, false)
-	if err != nil {
-		log.Printf("ERROR: SAING DATA LOGIN %v", err)
+	if saveLoginHistory {
+		err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, tokenString, user.UserId, false)
+		if err != nil {
+			log.Printf("ERROR: SAING DATA LOGIN %v", err)
+		}
 	}
 	return &gooauthrest.JWT{
 		AccessToken:  tokenString,

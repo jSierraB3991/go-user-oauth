@@ -10,7 +10,7 @@ import (
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
 )
 
-func (s *GoOauthService) LoginUser(ctx context.Context, req gooauthrequest.GoLoginRequest) (*gooauthrest.JWT, error) {
+func (s *GoOauthService) LoginUser(ctx context.Context, req gooauthrequest.GoLoginRequest, saveLoginHistory bool) (*gooauthrest.JWT, error) {
 	userName := strings.ToLower(req.UserName)
 
 	user, err := s.repo.GetUserByEmail(ctx, userName)
@@ -42,9 +42,11 @@ func (s *GoOauthService) LoginUser(ctx context.Context, req gooauthrequest.GoLog
 		}, nil
 	}
 
-	err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, tokenString, user.UserId, true)
-	if err != nil {
-		log.Printf("ERROR: SAING DATA LOGIN %v", err)
+	if saveLoginHistory {
+		err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, tokenString, user.UserId, true)
+		if err != nil {
+			log.Printf("ERROR: SAING DATA LOGIN %v", err)
+		}
 	}
 
 	return &gooauthrest.JWT{
