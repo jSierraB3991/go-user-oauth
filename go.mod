@@ -6,10 +6,10 @@ toolchain go1.24.6
 
 require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/jSierraB3991/jsierra-libs v0.5.9
+	github.com/jSierraB3991/jsierra-libs v0.6.1
 	github.com/pquerna/otp v1.5.0
 	golang.org/x/crypto v0.42.0
-	gorm.io/gorm v1.30.5
+	gorm.io/gorm v1.31.0
 )
 
 require (

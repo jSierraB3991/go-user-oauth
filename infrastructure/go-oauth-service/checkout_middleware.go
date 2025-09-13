@@ -9,14 +9,14 @@ import (
 
 	gooauthmapper "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-mapper"
 	gooauthlibs "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_libs"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 
 	ctx := requets.Context()
 	path := gooauthmapper.ConvertPathToRegex(requets.URL.Path)
-	allow := jsierralibs.PublicMiddleWare(path, requets.Method)
+	allow := eliotlibs.PublicMiddleWare(path, requets.Method)
 	if allow {
 		return true
 	}

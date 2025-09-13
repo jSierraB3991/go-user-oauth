@@ -5,17 +5,17 @@ import (
 
 	gooauthmapper "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-mapper"
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (s *GoOauthService) UpdateUser(ctx context.Context, keyCloakUserId string, attributes *map[string][]string, req gooauthrequest.UpdateUserRequest) error {
-	data, err := s.repo.GetUserById(ctx, jsierralibs.GetUNumberForString(keyCloakUserId))
+	data, err := s.repo.GetUserById(ctx, eliotlibs.GetUNumberForString(keyCloakUserId))
 	if err != nil {
 		return err
 	}
 
-	data.Name = jsierralibs.CapitalizeName(req.FirstName)
-	data.SubName = jsierralibs.CapitalizeName(req.LastName)
+	data.Name = eliotlibs.CapitalizeName(req.FirstName)
+	data.SubName = eliotlibs.CapitalizeName(req.LastName)
 
 	err = s.repo.UpdateUser(ctx, data)
 	if err != nil {

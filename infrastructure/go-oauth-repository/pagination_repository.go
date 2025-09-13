@@ -5,13 +5,13 @@ import (
 	"math"
 	"strings"
 
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
-func (repo *Repository) paginate_with_param(ctx context.Context, value interface{}, page *jsierralibs.Paggination,
-	args []jsierralibs.PagginationParam, preloads []jsierralibs.PreloadParams) func(db *gorm.DB) *gorm.DB {
+func (repo *Repository) paginate_with_param(ctx context.Context, value interface{}, page *eliotlibs.Paggination,
+	args []eliotlibs.PagginationParam, preloads []eliotlibs.PreloadParams) func(db *gorm.DB) *gorm.DB {
 
 	db, _ := repo.WithTenant(ctx)
 

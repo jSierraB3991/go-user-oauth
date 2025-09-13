@@ -5,14 +5,14 @@ import (
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
 
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func GetUserByCreate(userParam gooauthrequest.CreateUser, role *gooauthmodel.GoUserRole, password string) *gooauthmodel.GoUserUser {
 	return &gooauthmodel.GoUserUser{
 		Email:      userParam.Email,
-		Name:       jsierralibs.CapitalizeName(userParam.FirstName),
-		SubName:    jsierralibs.CapitalizeName(userParam.LastName),
+		Name:       eliotlibs.CapitalizeName(userParam.FirstName),
+		SubName:    eliotlibs.CapitalizeName(userParam.LastName),
 		Password:   password,
 		GoUserRole: *role,
 		Enabled:    userParam.Emailverify,
@@ -40,7 +40,7 @@ func GetUserRestAnAttributtes(user *gooauthmodel.GoUserUser, attrs []gooauthmode
 	}
 
 	return &gooauthrest.User{
-		Id:         jsierralibs.GetFloatStringToUInt(user.UserId),
+		Id:         eliotlibs.GetFloatStringToUInt(user.UserId),
 		Email:      user.Email,
 		Name:       user.Name,
 		SubName:    user.SubName,

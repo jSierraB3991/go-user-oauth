@@ -10,7 +10,7 @@ import (
 
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, token string, userId uint, isLoginWithPassword bool) error {
@@ -28,11 +28,11 @@ func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, token
 		}
 	}
 
-	ipEncrypt, err := jsierralibs.Encrypt(ip, s.aesKeyForEncrypt)
+	ipEncrypt, err := eliotlibs.Encrypt(ip, s.aesKeyForEncrypt)
 	if err != nil {
 		return err
 	}
-	tokenEncrypt, err := jsierralibs.Encrypt(token, s.aesKeyForEncrypt)
+	tokenEncrypt, err := eliotlibs.Encrypt(token, s.aesKeyForEncrypt)
 	if err != nil {
 		return err
 	}
@@ -65,29 +65,29 @@ func (s *GoOauthService) saveInvalidDataLogin(ctx context.Context, ip, userAgent
 		}
 	}
 
-	ipEncrypt, err := jsierralibs.Encrypt(ip, s.aesKeyForEncrypt)
+	ipEncrypt, err := eliotlibs.Encrypt(ip, s.aesKeyForEncrypt)
 	if err != nil {
 		return err
 	}
 
 	emailencrypt := userEmail
-	if jsierralibs.RemoveSpace(userEmail) != "" {
-		emailEncryptPoint, err := jsierralibs.Encrypt(userEmail, s.aesKeyForEncrypt)
+	if eliotlibs.RemoveSpace(userEmail) != "" {
+		emailEncryptPoint, err := eliotlibs.Encrypt(userEmail, s.aesKeyForEncrypt)
 		if err != nil {
 			return err
 		}
 		emailencrypt = emailEncryptPoint
 	}
 	motiveencrypt := motive
-	if jsierralibs.RemoveSpace(motive) != "" {
-		motiveencryptPoint, err := jsierralibs.Encrypt(motive, s.aesKeyForEncrypt)
+	if eliotlibs.RemoveSpace(motive) != "" {
+		motiveencryptPoint, err := eliotlibs.Encrypt(motive, s.aesKeyForEncrypt)
 		if err != nil {
 			return err
 		}
 		motiveencrypt = motiveencryptPoint
 	}
 
-	tenant, _ := jsierralibs.FromContext(ctx)
+	tenant, _ := eliotlibs.FromContext(ctx)
 	request := gooauthmodel.GoUserInvalidGoAuth{
 		Ip:                  ipEncrypt,
 		UserAgent:           userAgent,

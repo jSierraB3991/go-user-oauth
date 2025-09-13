@@ -9,7 +9,7 @@ import (
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 	"github.com/pquerna/otp/totp"
 )
 
@@ -20,7 +20,7 @@ func (s *GoOauthService) ValidateCodeOtp(ctx context.Context, req gooauthrequest
 		return false, err
 	}
 
-	secretData, err := jsierralibs.Decrypt(*code, s.aesKeyForEncrypt)
+	secretData, err := eliotlibs.Decrypt(*code, s.aesKeyForEncrypt)
 	if err != nil {
 		return false, err
 	}

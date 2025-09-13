@@ -5,11 +5,11 @@ import (
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (s *GoOauthService) ChangePassword(ctx context.Context, req gooauthrequest.ChangePasswordRequest) error {
-	dataUser, err := s.repo.GetUserById(ctx, jsierralibs.GetUNumberForString(req.KeycloakUserId))
+	dataUser, err := s.repo.GetUserById(ctx, eliotlibs.GetUNumberForString(req.KeycloakUserId))
 	if err != nil {
 		return err
 	}
@@ -28,7 +28,7 @@ func (s *GoOauthService) ChangePassword(ctx context.Context, req gooauthrequest.
 }
 
 func (s *GoOauthService) ChangePasswordToGeneric(ctx context.Context, kUserId string) error {
-	dataUser, err := s.repo.GetUserById(ctx, jsierralibs.GetUNumberForString(kUserId))
+	dataUser, err := s.repo.GetUserById(ctx, eliotlibs.GetUNumberForString(kUserId))
 	if err != nil {
 		return err
 	}

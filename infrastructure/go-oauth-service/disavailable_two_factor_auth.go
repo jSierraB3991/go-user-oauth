@@ -7,7 +7,7 @@ import (
 	"time"
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 	"github.com/pquerna/otp/totp"
 )
 
@@ -21,7 +21,7 @@ func (s *GoOauthService) DisAvailableTwoFactorAuth(ctx context.Context, userEmai
 		return gooautherror.UserNoHaveTwoFactorError{}
 	}
 
-	secretData, err := jsierralibs.Decrypt(user.KeyOathApp, s.aesKeyForEncrypt)
+	secretData, err := eliotlibs.Decrypt(user.KeyOathApp, s.aesKeyForEncrypt)
 	if err != nil {
 		return err
 	}

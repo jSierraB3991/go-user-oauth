@@ -9,7 +9,7 @@ import (
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 	"github.com/pquerna/otp/totp"
 )
 
@@ -27,7 +27,7 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, req gooauthrequ
 		return nil, gooautherror.UserNoHaveTwoFactorError{}
 	}
 
-	secretData, err := jsierralibs.Decrypt(user.KeyOathApp, s.aesKeyForEncrypt)
+	secretData, err := eliotlibs.Decrypt(user.KeyOathApp, s.aesKeyForEncrypt)
 	if err != nil {
 		s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Error al desencriptar el usuario", true)
 		return nil, err

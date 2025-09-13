@@ -9,7 +9,7 @@ import (
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	"gorm.io/gorm"
 
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (repo *Repository) RunMigrations(schemas []string) error {
@@ -26,7 +26,7 @@ func (repo *Repository) RunMigrations(schemas []string) error {
 		}
 
 		// establecer el search_path de forma segura
-		_, err = dbTenant.Exec(`SET search_path TO ` + jsierralibs.QuoteIdentifier(schema)) // o con una query preparada
+		_, err = dbTenant.Exec(`SET search_path TO ` + eliotlibs.QuoteIdentifier(schema)) // o con una query preparada
 		if err != nil {
 			log.Fatalf("could not set search_path for %s: %v", schema, err)
 
@@ -38,20 +38,16 @@ func (repo *Repository) RunMigrations(schemas []string) error {
 		if err != nil {
 			return err
 		}
-		err = jsierralibs.RunMigrations(repo,
+		eliotlibs.RunMigrations(repo,
 			repo.MigrateO1,
 			repo.Migrate02)
-		if err != nil {
-			return err
-		}
-
 		log.Printf("✅ Migrated schema: %s", schema)
 	}
 	return nil
 }
 
 func ensureSchemaExists(db *gorm.DB, schema string) error {
-	return db.Exec(fmt.Sprintf("CREATE SCHEMA IF NOT EXISTS %s", jsierralibs.QuoteIdentifier(schema))).Error
+	return db.Exec(fmt.Sprintf("CREATE SCHEMA IF NOT EXISTS %s", eliotlibs.QuoteIdentifier(schema))).Error
 }
 
 func (repo *Repository) ValidateMigrate(version string) (bool, error) {
@@ -86,7 +82,7 @@ func (repo *Repository) Migrate00() error {
 }
 
 func (repo *Repository) Migrate02() error {
-	ctx := context.WithValue(context.Background(), jsierralibs.ContextTenantKey, repo.schemaForMigrations)
+	ctx := context.WithValue(context.Background(), eliotlibs.ContextTenantKey, repo.schemaForMigrations)
 	return repo.capitalizeNameInDatabase(ctx, 1, 10)
 }
 
@@ -94,15 +90,15 @@ func (repo *Repository) capitalizeNameInDatabase(ctx context.Context, page, limi
 	if limit < page {
 		return nil
 	}
-	pagination := jsierralibs.Paggination{Limit: 10, Page: page}
+	pagination := eliotlibs.Paggination{Limit: 10, Page: page}
 
 	userDataDb, err := repo.GetUsersPage(ctx, &pagination)
 	if err != nil {
 		return err
 	}
 	for _, v := range userDataDb {
-		newName := jsierralibs.CapitalizeName(v.Name)
-		newSubName := jsierralibs.CapitalizeName(v.SubName)
+		newName := eliotlibs.CapitalizeName(v.Name)
+		newSubName := eliotlibs.CapitalizeName(v.SubName)
 
 		v.Name = newName
 		v.SubName = newSubName

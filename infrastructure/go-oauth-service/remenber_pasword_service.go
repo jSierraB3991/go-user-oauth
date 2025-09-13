@@ -4,7 +4,7 @@ import (
 	"context"
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 	"github.com/pquerna/otp/totp"
 )
 
@@ -15,7 +15,7 @@ func (s *GoOauthService) RemenberPassword(ctx context.Context, token, newPasswor
 	}
 
 	if userData.IsActiveTwoFactorOauth {
-		codeDecrypeted, err := jsierralibs.Decrypt(userData.KeyOathApp, s.aesKeyForEncrypt)
+		codeDecrypeted, err := eliotlibs.Decrypt(userData.KeyOathApp, s.aesKeyForEncrypt)
 		if err != nil {
 			return err
 		}

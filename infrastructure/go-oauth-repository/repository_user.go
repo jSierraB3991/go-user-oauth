@@ -6,7 +6,7 @@ import (
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	gooauthlibs "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_libs"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (repo *Repository) SaveUser(ctx context.Context, user *gooauthmodel.GoUserUser) error {
@@ -219,15 +219,15 @@ func (repo *Repository) GetUsersByEmail(ctx context.Context, emails []string) ([
 	return result, nil
 }
 
-func (repo *Repository) GetUsersPage(ctx context.Context, page *jsierralibs.Paggination) ([]gooauthmodel.GoUserUser, error) {
+func (repo *Repository) GetUsersPage(ctx context.Context, page *eliotlibs.Paggination) ([]gooauthmodel.GoUserUser, error) {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	var result []gooauthmodel.GoUserUser
-	params := []jsierralibs.PagginationParam{}
-	preloads := []jsierralibs.PreloadParams{}
+	params := []eliotlibs.PagginationParam{}
+	preloads := []eliotlibs.PreloadParams{}
 	err = db.Scopes(repo.paginate_with_param(ctx, result, page, params, preloads)).Find(&result).Error
 	if err != nil {
 		return nil, err
@@ -235,18 +235,18 @@ func (repo *Repository) GetUsersPage(ctx context.Context, page *jsierralibs.Pagg
 	return result, nil
 }
 
-func (repo *Repository) GetUsersByNamePage(ctx context.Context, page *jsierralibs.Paggination, nameLike string) ([]gooauthmodel.GoUserUser, error) {
+func (repo *Repository) GetUsersByNamePage(ctx context.Context, page *eliotlibs.Paggination, nameLike string) ([]gooauthmodel.GoUserUser, error) {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {
 		return nil, err
 	}
 	val := "%" + nameLike + "%"
 	var result []gooauthmodel.GoUserUser
-	params := []jsierralibs.PagginationParam{{
+	params := []eliotlibs.PagginationParam{{
 		Where: "name ILIKE $1 OR sub_name ILIKE $1",
 		Data:  []interface{}{val},
 	}}
-	preloads := []jsierralibs.PreloadParams{}
+	preloads := []eliotlibs.PreloadParams{}
 	err = db.Scopes(repo.paginate_with_param(ctx, result, page, params, preloads)).Find(&result).Error
 	if err != nil {
 		return nil, err

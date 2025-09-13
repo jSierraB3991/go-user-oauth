@@ -5,12 +5,12 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (s *GoOauthService) GeneratetokenToValidate(ctx context.Context, userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error) {
 
-	dataUser, err := s.repo.GetUserById(ctx, jsierralibs.GetUNumberForString(userId))
+	dataUser, err := s.repo.GetUserById(ctx, eliotlibs.GetUNumberForString(userId))
 	if err != nil {
 		return nil, err
 	}

@@ -6,11 +6,11 @@ import (
 	"net/http"
 
 	"github.com/golang-jwt/jwt"
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func GetClaimByToken(tokenString, claim string) (interface{}, error) {
-	token, _, err := new(jwt.Parser).ParseUnverified(jsierralibs.RemovePrefixInString(tokenString, BEARER_HEADER_PREFIX), jwt.MapClaims{})
+	token, _, err := new(jwt.Parser).ParseUnverified(eliotlibs.RemovePrefixInString(tokenString, BEARER_HEADER_PREFIX), jwt.MapClaims{})
 	if err != nil {
 		fmt.Println("Error parsing token:", err)
 		return nil, err

@@ -29,6 +29,8 @@ github.com/jSierraB3991/jsierra-libs v0.5.8 h1:RJoAOfwLbUjl3FXGI5QYDvBLN48R8bcaT
 github.com/jSierraB3991/jsierra-libs v0.5.8/go.mod h1:v/y1qU2zm8oKQjNOcGwG2ReSRqtkI1kmSSH7BRg7Oao=
 github.com/jSierraB3991/jsierra-libs v0.5.9 h1:vQhqPoUiu8EUOGIdCnrWeLBn2TYYELwlqQcn4visd3M=
 github.com/jSierraB3991/jsierra-libs v0.5.9/go.mod h1:nLb4++T+rDiA+oZBWvyOwALT6UteQdnvXq4fbLDo7Vw=
+github.com/jSierraB3991/jsierra-libs v0.6.1 h1:kif64N/5Lz1RKP599UjGKNSV6qy8Jynfw09leGeMwEY=
+github.com/jSierraB3991/jsierra-libs v0.6.1/go.mod h1:nLb4++T+rDiA+oZBWvyOwALT6UteQdnvXq4fbLDo7Vw=
 github.com/jinzhu/inflection v1.0.0 h1:K317FqzuhWc8YvSVlFMCCUb36O/S9MCKRDI7QkRKD/E=
 github.com/jinzhu/inflection v1.0.0/go.mod h1:h+uFLlag+Qp1Va5pdKtLDYj+kHp5pxUVkryuEj+Srlc=
 github.com/jinzhu/now v1.1.5 h1:/o9tlHleP7gOFmsnYNz3RGnqzefHA47wQpKrrdTIwXQ=
@@ -58,3 +60,5 @@ gorm.io/gorm v1.30.0 h1:qbT5aPv1UH8gI99OsRlvDToLxW5zR7FzS9acZDOZcgs=
 gorm.io/gorm v1.30.0/go.mod h1:8Z33v652h4//uMA76KjeDH8mJXPm1QNCYrMeatR0DOE=
 gorm.io/gorm v1.30.5 h1:dvEfYwxL+i+xgCNSGGBT1lDjCzfELK8fHZxL3Ee9X0s=
 gorm.io/gorm v1.30.5/go.mod h1:8Z33v652h4//uMA76KjeDH8mJXPm1QNCYrMeatR0DOE=
+gorm.io/gorm v1.31.0 h1:0VlycGreVhK7RF/Bwt51Fk8v0xLiiiFdbGDPIZQ7mJY=
+gorm.io/gorm v1.31.0/go.mod h1:XyQVbO2k6YkOis7C2437jSit3SsDK72s7n7rsSHd+Gs=

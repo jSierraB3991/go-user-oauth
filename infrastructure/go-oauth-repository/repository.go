@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	jsierralibs "github.com/jSierraB3991/jsierra-libs"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +19,7 @@ func InitiateRepo(db *gorm.DB) *Repository {
 	}
 }
 func (repo *Repository) WithTenant(ctx context.Context) (*gorm.DB, error) {
-	tenant, err := jsierralibs.WithTenant(ctx)
+	tenant, err := eliotlibs.WithTenant(ctx)
 	if err != nil {
 		return repo.db, nil
 	}
