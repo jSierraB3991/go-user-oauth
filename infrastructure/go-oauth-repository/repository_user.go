@@ -275,12 +275,18 @@ func (repo *Repository) ExistsUserAdministrator(ctx context.Context) (bool, erro
 }
 
 func (repo *Repository) VerifyIfEmailInAnotherAccont(ctx context.Context, newEmail string) error {
-	user, err := repo.GetUserByEmail(ctx, newEmail)
+	db, err := repo.WithTenant(ctx)
 	if err != nil {
 		return err
 	}
 
-	if user.Email != "" {
+	var result gooauthmodel.GoUserUser
+	err = db.Preload("GoUserRole").Where("email = ?", newEmail).Find(&result).Error
+	if err != nil {
+		return err
+	}
+
+	if result.Email != "" {
 		return gooautherror.NewEmailInAntherUserError{}
 	}
 	return nil
