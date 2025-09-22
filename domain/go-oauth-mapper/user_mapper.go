@@ -40,13 +40,14 @@ func GetUserRestAnAttributtes(user *gooauthmodel.GoUserUser, attrs []gooauthmode
 	}
 
 	return &gooauthrest.User{
-		Id:         eliotlibs.GetFloatStringToUInt(user.UserId),
-		Email:      user.Email,
-		Name:       user.Name,
-		SubName:    user.SubName,
-		Enabled:    user.Enabled,
-		Role:       user.GoUserRole.RoleName,
-		Attributes: &attrRes,
+		Id:                     eliotlibs.GetFloatStringToUInt(user.UserId),
+		Email:                  user.Email,
+		Name:                   user.Name,
+		SubName:                user.SubName,
+		Enabled:                user.Enabled,
+		Role:                   user.GoUserRole.RoleName,
+		IsActiveTwoFactorOauth: user.IsActiveTwoFactorOauth,
+		Attributes:             &attrRes,
 	}
 }
 
