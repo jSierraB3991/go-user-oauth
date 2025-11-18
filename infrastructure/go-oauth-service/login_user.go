@@ -15,24 +15,32 @@ func (s *GoOauthService) LoginUser(ctx context.Context, req gooauthrequest.GoLog
 
 	user, err := s.repo.GetUserByEmail(ctx, userName)
 	if err != nil {
-		s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Usuario no encontrado", false)
+		if saveLoginHistory {
+			s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Usuario no encontrado", false)
+		}
 		return nil, err
 	}
 
 	if !user.Enabled {
-		s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Usuario invalido, no esta habilitado", false)
+		if saveLoginHistory {
+			s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Usuario invalido, no esta habilitado", false)
+		}
 		return nil, gooautherror.UserNotEnabledError{}
 	}
 
 	isVerify := s.passwordService.VerifyPassword(user.Password, req.Password)
 	if !isVerify {
-		s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "La contraseña introducida, es erronea", false)
+		if saveLoginHistory {
+			s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "La contraseña introducida, es erronea", false)
+		}
 		return nil, gooautherror.InvalidUserOrPassword{}
 	}
 
 	tokenString, exp, err := s.GetJwtToken(ctx, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName, req.IsRemenber)
 	if err != nil {
-		s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Error al generar el token", false)
+		if saveLoginHistory {
+			s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Error al generar el token", false)
+		}
 		return nil, err
 	}
 

@@ -74,7 +74,10 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 	if err == nil {
 		// Restaurar el body para que se pueda usar de nuevo
 		requets.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-		log.Println("Body recibido:", string(string(bodyBytes)))
+		bodyString := string(bodyBytes)
+		if eliotlibs.RemoveSpace(bodyString) != "" {
+			log.Println("Body recibido:", bodyString)
+		}
 	}
 
 	return false
