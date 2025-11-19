@@ -8,7 +8,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jSierraB3991/jsierra-libs v0.6.3
 	github.com/pquerna/otp v1.5.0
-	golang.org/x/crypto v0.44.0
+	golang.org/x/crypto v0.45.0
 	gorm.io/gorm v1.31.1
 )
 

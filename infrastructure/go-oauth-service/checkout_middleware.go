@@ -76,7 +76,8 @@ func (s *GoOauthService) CheckoutMiddleware(requets *http.Request) bool {
 		requets.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 		bodyString := string(bodyBytes)
 		if eliotlibs.RemoveSpace(bodyString) != "" {
-			log.Println("Body recibido:", bodyString)
+			//log.Println("Body recibido:", bodyString)
+			//TODO: SAVE LOG BODY IF NEEDED
 		}
 	}
 
