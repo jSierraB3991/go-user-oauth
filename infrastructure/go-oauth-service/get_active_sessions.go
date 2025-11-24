@@ -8,7 +8,7 @@ import (
 	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
-func (s *GoOauthService) GetActiveSessions(ctx context.Context, email string, page, limit int) ([]gooauthrest.LoginSessionRest, error) {
+func (s *GoOauthService) GetActiveSessions(ctx context.Context, email, tokenString string, page, limit int) ([]gooauthrest.LoginSessionRest, error) {
 	user, err := s.repo.GetUserByEmail(ctx, email)
 	if err != nil {
 		return nil, err

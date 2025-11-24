@@ -14,4 +14,5 @@ type LoginSessionRest struct {
 	IsLoginWithPassword bool                         `json:"is_login_with_password"`
 	IsAvailable         bool                         `json:"is_available"`
 	Fecha               time.Time                    `json:"fecha"`
+	IsThisSession       bool                         `json:"is_this_session"`
 }
