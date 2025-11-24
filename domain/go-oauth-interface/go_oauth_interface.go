@@ -47,4 +47,5 @@ type GoOauthInterface interface {
 	ChangePasswordToGeneric(ctx context.Context, kUserId string) error
 
 	GetInvalidLogins(ctx context.Context, page *eliotlibs.Paggination) (*gooauthrest.InvalidLoginRestPagg, error)
+	GetActiveSessions(ctx context.Context, email string, page, limit int) ([]gooauthrest.LoginSessionRest, error)
 }

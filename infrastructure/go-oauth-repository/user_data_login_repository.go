@@ -42,3 +42,22 @@ func (repo *Repository) GetDataLoginFailed(ctx context.Context, page *eliotlibs.
 	}
 	return result, nil
 }
+
+func (repo *Repository) GetDataLoginSessions(ctx context.Context, page *eliotlibs.Paggination) ([]gooauthmodel.GoUserDataLogin, error) {
+	var result []gooauthmodel.GoUserDataLogin
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		log.Printf("ERROR GET DB %s", err.Error())
+		return nil, err
+	}
+	args := []eliotlibs.PagginationParam{
+		{Where: "user_id = ?", Data: []interface{}{page.Data}},
+	}
+	preloads := []eliotlibs.PreloadParams{}
+	err = db.Scopes(repo.paginate_with_param(ctx, result, page, args, preloads)).Find(&result).Error
+	if err != nil {
+		log.Printf("ERROR GET LOGIN SESSIONS %s", err.Error())
+		return nil, err
+	}
+	return result, nil
+}
