@@ -23,5 +23,5 @@ func (s *GoOauthService) GetActiveSessions(ctx context.Context, email string, pa
 	if err != nil {
 		return nil, err
 	}
-	return gooauthmapper.MapLoginSessionsToRest(loginSessions), nil
+	return gooauthmapper.MapLoginSessionsToRest(loginSessions, s.aesKeyForEncrypt), nil
 }
