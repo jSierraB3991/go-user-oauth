@@ -48,4 +48,6 @@ type GoOauthInterface interface {
 
 	GetInvalidLogins(ctx context.Context, page *eliotlibs.Paggination) (*gooauthrest.InvalidLoginRestPagg, error)
 	GetActiveSessions(ctx context.Context, email, tokenString string, page, limit int) ([]gooauthrest.LoginSessionRest, error)
+	RemoveSessionByToken(ctx context.Context, email, tokenString string) error
+	RemoveSessionById(ctx context.Context, sessionId uint) error
 }
