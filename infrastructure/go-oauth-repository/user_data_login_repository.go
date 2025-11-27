@@ -86,5 +86,5 @@ func (repo *Repository) RemoveSessionById(ctx context.Context, idSession uint) e
 	if err != nil {
 		return err
 	}
-	return db.Model(&gooauthmodel.GoUserUser{}).Where("id = ?", idSession).Update("is_active_two_factor", false).Error
+	return db.Model(&gooauthmodel.GoUserDataLogin{}).Where("id = ?", idSession).Update("is_available", false).Error
 }
