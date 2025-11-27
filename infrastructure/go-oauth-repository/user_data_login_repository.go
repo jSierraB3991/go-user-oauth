@@ -72,7 +72,7 @@ func (repo *Repository) GetSessionsByToken(ctx context.Context, email, token str
 	user := db.Select("id").Model(&gooauthmodel.GoUserUser{}).Where("email = ?", email)
 
 	var result []gooauthmodel.GoUserDataLogin
-	err = db.Where("is_available = ? AND user_id IN ?", true, user).Find(&result).Error
+	err = db.Where("is_available = ? AND user_id IN (?)", true, user).Find(&result).Error
 	if err != nil {
 		return nil, err
 	}
