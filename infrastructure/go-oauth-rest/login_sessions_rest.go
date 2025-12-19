@@ -20,8 +20,8 @@ type LoginSessionRest struct {
 type LoginSessionRestPagination struct {
 	Limit      int                `json:"limit"`
 	Page       int                `json:"page"`
-	TotalRows  int64              `json:"rows"`
-	TotalPages int                `json:"pages"`
-	Data       []LoginSessionRest `json:"data"`
+	TotalRows  int64              `json:"total_rows"`
+	TotalPages int                `json:"total_pages"`
 	Sort       string             `json:"-"`
+	Data       []LoginSessionRest `json:"data"`
 }
