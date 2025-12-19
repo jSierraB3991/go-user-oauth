@@ -16,3 +16,12 @@ type LoginSessionRest struct {
 	Fecha               time.Time                    `json:"fecha"`
 	IsThisSession       bool                         `json:"is_this_session"`
 }
+
+type LoginSessionRestPagination struct {
+	Limit      int                `json:"limit"`
+	Page       int                `json:"page"`
+	TotalRows  int64              `json:"rows"`
+	TotalPages int                `json:"pages"`
+	Data       []LoginSessionRest `json:"data"`
+	Sort       string             `json:"-"`
+}
