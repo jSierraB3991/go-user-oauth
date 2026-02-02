@@ -50,4 +50,6 @@ type GoOauthInterface interface {
 	GetActiveSessions(ctx context.Context, email, tokenString string, page, limit int) (*gooauthrest.LoginSessionRestPagination, error)
 	RemoveSessionByToken(ctx context.Context, email, tokenString string) error
 	RemoveSessionById(ctx context.Context, sessionId uint) error
+
+	RemoveUserTwoMonthsNoValidate(ctx context.Context) error
 }

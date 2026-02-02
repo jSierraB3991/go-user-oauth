@@ -2,6 +2,7 @@ package gooauthrepository
 
 import (
 	"context"
+	"time"
 
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
@@ -290,4 +291,31 @@ func (repo *Repository) VerifyIfEmailInAnotherAccont(ctx context.Context, newEma
 		return gooautherror.NewEmailInAntherUserError{}
 	}
 	return nil
+}
+
+func (repo *Repository) GetUserNoValidateMail(ctx context.Context) ([]gooauthmodel.GoUserUser, error) {
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	twoMonthsAgo := time.Now().AddDate(0, -2, 0)
+
+	var result []gooauthmodel.GoUserUser
+	err = db.
+		Where("enabled = ? AND created_at <= ?", false, twoMonthsAgo).
+		Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (repo *Repository) DeleteUser(ctx context.Context, userId uint) error {
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return err
+	}
+
+	return db.Delete(&gooauthmodel.GoUserUser{}, userId).Error
 }
