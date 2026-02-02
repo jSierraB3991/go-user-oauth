@@ -8,6 +8,7 @@ import (
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	gooauthlibs "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_libs"
 	eliotlibs "github.com/jSierraB3991/jsierra-libs"
+	"gorm.io/gorm"
 )
 
 func (repo *Repository) SaveUser(ctx context.Context, user *gooauthmodel.GoUserUser) error {
@@ -318,5 +319,23 @@ func (repo *Repository) DeleteUser(ctx context.Context, userId uint) error {
 		return err
 	}
 
-	return db.Delete(&gooauthmodel.GoUserUser{}, userId).Error
+	return db.Transaction(func(tx *gorm.DB) error {
+		// borrar atributos del usuario (hard delete)
+		if err := tx.
+			Unscoped().
+			Delete(&gooauthmodel.GoUserUserAttributtes{}, "user_id = ?", userId).
+			Error; err != nil {
+			return err
+		}
+
+		// borrar usuario (hard delete)
+		if err := tx.
+			Unscoped().
+			Delete(&gooauthmodel.GoUserUser{}, userId).
+			Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
 }
