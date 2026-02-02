@@ -304,6 +304,7 @@ func (repo *Repository) GetUserNoValidateMail(ctx context.Context) ([]gooauthmod
 	var result []gooauthmodel.GoUserUser
 	err = db.
 		Where("enabled = ? AND created_at <= ?", false, twoMonthsAgo).
+		Order("created_at DESC").
 		Find(&result).Error
 	if err != nil {
 		return nil, err

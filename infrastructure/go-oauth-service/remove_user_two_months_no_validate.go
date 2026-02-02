@@ -1,17 +1,23 @@
 package gooauthservice
 
-import "context"
+import (
+	"context"
 
-func (s *GoOauthService) RemoveUserTwoMonthsNoValidate(ctx context.Context) error {
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
+)
+
+func (s *GoOauthService) RemoveUserTwoMonthsNoValidate(ctx context.Context) ([]string, error) {
 	users, err := s.repo.GetUserNoValidateMail(ctx)
 	if err != nil {
-		return err
+		return nil, err
 	}
+	var deletedUsers []string
 	for _, user := range users {
 		err = s.repo.DeleteUser(ctx, user.UserId)
 		if err != nil {
-			return err
+			return deletedUsers, err
 		}
+		deletedUsers = append(deletedUsers, eliotlibs.GetStringUNumberFor(user.UserId))
 	}
-	return nil
+	return deletedUsers, nil
 }
