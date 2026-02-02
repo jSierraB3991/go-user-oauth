@@ -294,7 +294,7 @@ func (repo *Repository) VerifyIfEmailInAnotherAccont(ctx context.Context, newEma
 	return nil
 }
 
-func (repo *Repository) GetUserNoValidateMail(ctx context.Context) ([]gooauthmodel.GoUserUser, error) {
+func (repo *Repository) GetUserNoValidateMail(ctx context.Context, usersNoRemove []uint) ([]gooauthmodel.GoUserUser, error) {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {
 		return nil, err
@@ -304,7 +304,7 @@ func (repo *Repository) GetUserNoValidateMail(ctx context.Context) ([]gooauthmod
 
 	var result []gooauthmodel.GoUserUser
 	err = db.
-		Where("enabled = ? AND created_at <= ?", false, twoMonthsAgo).
+		Where("enabled = ? AND created_at <= ? AND id NOT IN (?)", false, twoMonthsAgo, usersNoRemove).
 		Order("created_at DESC").
 		Find(&result).Error
 	if err != nil {
