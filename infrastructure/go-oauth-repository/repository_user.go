@@ -2,6 +2,7 @@ package gooauthrepository
 
 import (
 	"context"
+	"encoding/json"
 	"time"
 
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
@@ -313,6 +314,38 @@ func (repo *Repository) GetUserNoValidateMail(ctx context.Context, usersNoRemove
 	return result, nil
 }
 
+func (repo *Repository) getDataUserString(ctx context.Context, userId uint) (string, string, error) {
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return "", "", err
+	}
+
+	var attr []gooauthmodel.GoUserUserAttributtes
+	if err := db.
+		Where("user_id = ?", userId).
+		Find(&attr).Error; err != nil {
+		return "", "", err
+	}
+
+	var user gooauthmodel.GoUserUser
+	if err := db.
+		Find(&user, userId).Error; err != nil {
+		return "", "", err
+	}
+
+	userString, err := json.Marshal(&user)
+	if err != nil {
+		return "", "", err
+	}
+
+	userAttrString, err := json.Marshal(&attr)
+	if err != nil {
+		return "", "", err
+	}
+
+	return string(userString), string(userAttrString), nil
+}
+
 func (repo *Repository) DeleteUser(ctx context.Context, userId uint) error {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {
@@ -320,6 +353,21 @@ func (repo *Repository) DeleteUser(ctx context.Context, userId uint) error {
 	}
 
 	return db.Transaction(func(tx *gorm.DB) error {
+
+		userString, userAttrString, err := repo.getDataUserString(ctx, userId)
+		if err != nil {
+			return err
+		}
+
+		dataToSave := gooauthmodel.UserDataRemove{
+			DataUserPpal: string(userString),
+			DataUserAttr: string(userAttrString),
+		}
+
+		if err := tx.Create(&dataToSave).Error; err != nil {
+			return err
+		}
+
 		// borrar atributos del usuario (hard delete)
 		if err := tx.
 			Unscoped().
