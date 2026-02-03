@@ -70,6 +70,7 @@ func (repo *Repository) SaveMigration(version string) error {
 func (repo *Repository) Migrate00() error {
 	return repo.db.AutoMigrate(
 		&gooauthmodel.GoUserDataLogin{},
+		&gooauthmodel.UserDataRemove{},
 		&gooauthmodel.GoUserInvalidGoAuth{},
 		&gooauthmodel.GoUserUserMigration{},
 		&gooauthmodel.GoUserPathBack{},
