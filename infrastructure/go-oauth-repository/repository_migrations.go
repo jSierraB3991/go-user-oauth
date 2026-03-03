@@ -68,7 +68,12 @@ func (repo *Repository) SaveMigration(version string) error {
 }
 
 func (repo *Repository) Migrate00() error {
-	return repo.db.AutoMigrate(
+	ctx := context.WithValue(context.Background(), eliotlibs.ContextTenantKey, repo.schemaForMigrations)
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return err
+	}
+	return db.AutoMigrate(
 		&gooauthmodel.GoUserDataLogin{},
 		&gooauthmodel.UserDataRemove{},
 		&gooauthmodel.GoUserInvalidGoAuth{},
