@@ -48,7 +48,7 @@ func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncr
 	}
 }
 func (GoOauthService) ErrorHandler() error {
-	return gooautherror.InactiveToken{}
+	return gooautherror.InactiveTokenError{}
 }
 
 func (s *GoOauthService) GetJwtToken(ctx context.Context, userId, roleId uint, email, roleName string, remenber bool) (string, int, error) {

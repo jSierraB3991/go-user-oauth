@@ -1,7 +1,7 @@
 package gooautherror
 
-type InactiveToken struct{}
+type InactiveTokenError struct{}
 
-func (InactiveToken) Error() string {
-	return "INACTIVE_TOKEN"
+func (InactiveTokenError) Error() string {
+	return "INACTIVE_TOKEN_ERROR"
 }
