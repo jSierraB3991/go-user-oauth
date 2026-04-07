@@ -52,4 +52,6 @@ type GoOauthInterface interface {
 	RemoveSessionById(ctx context.Context, sessionId uint) error
 
 	RemoveUserTwoMonthsNoValidate(ctx context.Context, usersNoRemove []string) ([]string, error)
+
+	UpdateOneAttr(ctx context.Context, keyCloakUserId string, attribute string, value string) error
 }

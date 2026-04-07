@@ -38,31 +38,6 @@ func (repo *Repository) UpdateUser(ctx context.Context, user *gooauthmodel.GoUse
 
 	return db.Save(&user).Error
 }
-
-func (repo *Repository) SaveAttributtes(ctx context.Context, userId uint, attr []gooauthmodel.GoUserUserAttributtes) error {
-	db, err := repo.WithTenant(ctx)
-	if err != nil {
-		return err
-	}
-
-	if attr == nil {
-		return nil
-	}
-	for i := range attr {
-		attr[i].GoUserUserId = userId
-	}
-	return db.Save(&attr).Error
-}
-
-func (repo *Repository) UpdateAttrr(ctx context.Context, attr []gooauthmodel.GoUserUserAttributtes) error {
-	db, err := repo.WithTenant(ctx)
-	if err != nil {
-		return err
-	}
-
-	return db.Save(&attr).Error
-}
-
 func (repo *Repository) GetUserByEmail(ctx context.Context, userEmail string) (*gooauthmodel.GoUserUser, error) {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {
@@ -95,20 +70,6 @@ func (repo *Repository) GetUserById(ctx context.Context, userId uint) (*gooauthm
 		return nil, gooautherror.InvalidUserOrPassword{}
 	}
 	return &result, nil
-}
-
-func (repo *Repository) GetAttributtesByUserId(ctx context.Context, userId uint) ([]gooauthmodel.GoUserUserAttributtes, error) {
-	db, err := repo.WithTenant(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	var result []gooauthmodel.GoUserUserAttributtes
-	err = db.Where("user_id = ?", userId).Find(&result).Error
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
 }
 
 func (repo *Repository) SaveSecretToUser(ctx context.Context, userEmail, keyOath string) error {
