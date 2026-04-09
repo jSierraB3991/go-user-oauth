@@ -12,4 +12,11 @@ const (
 	EMAIL_CONSTANT = "email"
 
 	ADMIN_ROUTES = "/admin"
+
+	ROLE_NAME  = "role_name"
+	ROLE_ID    = "role_id"
+	USER_ID    = "user_id"
+	PATH_ALLOW = "paths_allow"
+	IAT        = "iat"
+	EXP        = "exp"
 )
