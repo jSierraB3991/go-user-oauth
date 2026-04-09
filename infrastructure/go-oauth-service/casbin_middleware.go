@@ -3,7 +3,6 @@ package gooauthservice
 import (
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/casbin/casbin/v3"
@@ -13,8 +12,7 @@ import (
 	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
-func GetCasbinConfig() *casbin.Enforcer {
-	configPath := os.Getenv("CASBIN_CONFIG_PATH")
+func GetCasbinConfig(configPath string) *casbin.Enforcer {
 	ce, err := casbin.NewEnforcer(configPath+"/model.conf", configPath+"/policy.csv")
 	if err != nil {
 		log.Fatal(err)
