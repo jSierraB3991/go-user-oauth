@@ -72,6 +72,23 @@ func (repo *Repository) GetUserById(ctx context.Context, userId uint) (*gooauthm
 	return &result, nil
 }
 
+func (repo *Repository) GetUsersByIds(ctx context.Context, userIds []uint) ([]gooauthmodel.GoUserUser, error) {
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []gooauthmodel.GoUserUser
+	err = db.Where("id IN ?", userIds).Preload("GoUserRole").Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	if len(result) == 0 {
+		return nil, nil
+	}
+	return result, nil
+}
+
 func (repo *Repository) SaveSecretToUser(ctx context.Context, userEmail, keyOath string) error {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {

@@ -20,6 +20,20 @@ func (repo *Repository) GetAttributtesByUserId(ctx context.Context, userId uint)
 	return result, nil
 }
 
+func (repo *Repository) GetAttributtesByUserIds(ctx context.Context, userIds []uint) ([]gooauthmodel.GoUserUserAttributtes, error) {
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []gooauthmodel.GoUserUserAttributtes
+	err = db.Where("user_id IN ?", userIds).Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 func (repo *Repository) SaveAttributtes(ctx context.Context, userId uint, attr []gooauthmodel.GoUserUserAttributtes) error {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {

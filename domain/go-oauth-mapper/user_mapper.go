@@ -111,3 +111,21 @@ func GetAttributteUpdate(attrData []gooauthmodel.GoUserUserAttributtes,
 
 	return result
 }
+
+func getMapAttrByUserId(attrs []gooauthmodel.GoUserUserAttributtes) map[uint][]gooauthmodel.GoUserUserAttributtes {
+	result := make(map[uint][]gooauthmodel.GoUserUserAttributtes)
+	for _, v := range attrs {
+		result[v.GoUserUserId] = append(result[v.GoUserUserId], v)
+	}
+	return result
+}
+
+func GetUsersRestAnAttributtes(users []gooauthmodel.GoUserUser, attrs []gooauthmodel.GoUserUserAttributtes) []gooauthrest.User {
+	var result []gooauthrest.User
+	attrMap := getMapAttrByUserId(attrs)
+	for _, v := range users {
+		data := GetUserRestAnAttributtes(&v, attrMap[v.UserId])
+		result = append(result, *data)
+	}
+	return result
+}
