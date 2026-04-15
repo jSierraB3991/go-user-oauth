@@ -17,7 +17,7 @@ func MapLoginSessionsToRest(sessions []gooauthmodel.GoUserDataLogin, aesEncrypt,
 		if err != nil {
 			ipDecrypt = "Desconocido"
 		}
-		refreshTokenDecrypt, err := eliotlibs.Decrypt(*session.RefreshToken, aesEncrypt)
+		refreshTokenDecrypt, err := eliotlibs.Decrypt(session.RefreshToken, aesEncrypt)
 		isThis := false
 		if err == nil {
 			isThis = refreshTokenDecrypt == refreshToken

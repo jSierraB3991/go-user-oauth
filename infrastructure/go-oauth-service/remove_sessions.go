@@ -23,7 +23,7 @@ func (s *GoOauthService) RemoveSessionByRefreshToken(ctx context.Context, email,
 	}
 
 	for _, v := range sessions {
-		refreshTokenDecrypr, err := eliotlibs.Decrypt(*v.RefreshToken, s.aesKeyForEncrypt)
+		refreshTokenDecrypr, err := eliotlibs.Decrypt(v.RefreshToken, s.aesKeyForEncrypt)
 		if err != nil {
 			return err
 		}

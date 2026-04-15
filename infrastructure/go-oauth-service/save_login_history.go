@@ -44,7 +44,7 @@ func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, refre
 		Ip:                  ipEncrypt,
 		UserAgent:           userAgent,
 		IsLoginWithPassword: isLoginWithPassword,
-		RefreshToken:        &refreshTokenEncrypt,
+		RefreshToken:        refreshTokenEncrypt,
 		Fecha:               timestamp,
 		IpResponse:          ipInfo,
 		GoUserUserId:        userId,
