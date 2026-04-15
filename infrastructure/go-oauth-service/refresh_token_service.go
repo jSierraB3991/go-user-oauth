@@ -18,12 +18,12 @@ func generateRefreshToken() string {
 }
 
 func (s *GoOauthService) RefreshToken(ctx context.Context, refreshToken string) (*gooauthrest.JWT, error) {
-	refreshTokenEntity, err := eliotlibs.Decrypt(refreshToken, s.aesKeyForEncrypt)
+	refreshTokenE, err := eliotlibs.Encrypt(refreshToken, s.aesKeyForEncrypt)
 	if err != nil {
 		return nil, err
 	}
 
-	session, err := s.repo.GetSessionsByRefreshToken(ctx, refreshTokenEntity)
+	session, err := s.repo.GetSessionsByRefreshToken(ctx, refreshTokenE)
 	if err != nil {
 		return nil, err
 	}
@@ -33,6 +33,10 @@ func (s *GoOauthService) RefreshToken(ctx context.Context, refreshToken string) 
 	}
 
 	if session.ExpiresAt.Before(time.Now()) {
+		err = s.repo.RemoveSessionById(ctx, session.UserDataLoginId)
+		if err != nil {
+			return nil, err
+		}
 		return nil, gooautherror.SessionExpiredError{}
 	}
 
