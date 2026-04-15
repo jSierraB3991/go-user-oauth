@@ -11,7 +11,6 @@ import (
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
-	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func generateRefreshToken() string {
@@ -47,10 +46,7 @@ func (s *GoOauthService) RefreshToken(ctx context.Context, refreshToken string) 
 	}
 
 	newRefreshToken := generateRefreshToken()
-	newRefreshTokenEncrypt, err := eliotlibs.Encrypt(newRefreshToken, s.aesKeyForEncrypt)
-	if err != nil {
-		return nil, err
-	}
+	newRefreshTokenEncrypt := s.hashToken(newRefreshToken)
 
 	err = s.repo.UpdateRefreshToken(ctx, session.UserDataLoginId, newRefreshTokenEncrypt)
 	if err != nil {
