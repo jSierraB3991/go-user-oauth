@@ -16,7 +16,7 @@ import (
 	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
-func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, refreshToken string, userId uint, isLoginWithPassword bool) (uint, error) {
+func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, refreshTokenEncrypt string, userId uint, isLoginWithPassword bool) (uint, error) {
 	timestamp := time.Now().UTC()
 	location, err := getIPLocation(ip)
 	if err != nil {
@@ -32,10 +32,6 @@ func (s *GoOauthService) saveDataLogin(ctx context.Context, ip, userAgent, refre
 	}
 
 	ipEncrypt, err := eliotlibs.Encrypt(ip, s.aesKeyForEncrypt)
-	if err != nil {
-		return 0, err
-	}
-	refreshTokenEncrypt, err := eliotlibs.Encrypt(refreshToken, s.aesKeyForEncrypt)
 	if err != nil {
 		return 0, err
 	}

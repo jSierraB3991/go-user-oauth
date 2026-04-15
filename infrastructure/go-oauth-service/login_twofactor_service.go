@@ -49,7 +49,7 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, req gooauthrequ
 	refreshToken := generateRefreshToken()
 	var sessionId uint
 	if s.saveLoginHistory {
-		sessionId, err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, refreshToken, user.UserId, false)
+		sessionId, err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, s.hashToken(refreshToken), user.UserId, false)
 		if err != nil {
 			log.Printf("ERROR: SAING DATA LOGIN %v", err)
 		}

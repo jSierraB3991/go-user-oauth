@@ -40,7 +40,7 @@ func (s *GoOauthService) LoginUser(ctx context.Context, req gooauthrequest.GoLog
 
 	var sessionId uint
 	if s.saveLoginHistory {
-		sessionId, err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, refreshToken, user.UserId, true)
+		sessionId, err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, s.hashToken(refreshToken), user.UserId, true)
 		if err != nil {
 			log.Printf("ERROR: SAING DATA LOGIN %v", err)
 		}

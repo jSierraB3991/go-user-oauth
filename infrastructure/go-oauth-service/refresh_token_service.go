@@ -2,8 +2,11 @@ package gooauthservice
 
 import (
 	"context"
+	"crypto/hmac"
 	"crypto/rand"
+	"crypto/sha256"
 	"encoding/base64"
+	"encoding/hex"
 	"time"
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
@@ -17,11 +20,14 @@ func generateRefreshToken() string {
 	return base64.URLEncoding.EncodeToString(b)
 }
 
+func (s *GoOauthService) hashToken(token string) string {
+	h := hmac.New(sha256.New, []byte(s.secretForJwt))
+	h.Write([]byte(token))
+	return hex.EncodeToString(h.Sum(nil))
+}
+
 func (s *GoOauthService) RefreshToken(ctx context.Context, refreshToken string) (*gooauthrest.JWT, error) {
-	refreshTokenE, err := eliotlibs.Encrypt(refreshToken, s.aesKeyForEncrypt)
-	if err != nil {
-		return nil, err
-	}
+	refreshTokenE := s.hashToken(refreshToken)
 
 	session, err := s.repo.GetSessionsByRefreshToken(ctx, refreshTokenE)
 	if err != nil {
