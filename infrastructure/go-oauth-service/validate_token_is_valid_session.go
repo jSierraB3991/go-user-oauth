@@ -18,12 +18,13 @@ func (s *GoOauthService) ValidateTokenIsValidSession(ctx context.Context, tokenS
 	}
 
 	claims := token.Claims.(jwt.MapClaims)
-	sid, ok := claims[gooauthlibs.SESSION_ID].(uint)
+	sid, ok := claims[gooauthlibs.SESSION_ID].(float64)
 	if !ok {
 		return gooautherror.InvalidTokenError{}
 	}
 
-	session, err := s.repo.GetSessionById(ctx, sid)
+	sidUint := uint(sid)
+	session, err := s.repo.GetSessionById(ctx, sidUint)
 	if err != nil {
 		return err
 	}
@@ -33,7 +34,7 @@ func (s *GoOauthService) ValidateTokenIsValidSession(ctx context.Context, tokenS
 	}
 
 	if session.ExpiresAt.Before(time.Now()) {
-		err := s.repo.RemoveSessionById(ctx, sid)
+		err := s.repo.RemoveSessionById(ctx, sidUint)
 		if err != nil {
 			return err
 		}
