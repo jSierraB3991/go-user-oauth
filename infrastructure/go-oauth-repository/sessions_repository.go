@@ -113,5 +113,5 @@ func (repo *Repository) UpdateRefreshToken(ctx context.Context, idSession uint, 
 
 	return db.Model(&gooauthmodel.GoUserDataLogin{}).
 		Where("id = ?", idSession).
-		Update("refresh_token = ?", refreshToken).Error
+		Update("refresh_token", refreshToken).Error
 }
