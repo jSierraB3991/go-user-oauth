@@ -11,7 +11,7 @@ type GoUserUser struct {
 	Name     string `gorm:"column:name;not null"`
 	SubName  string `gorm:"column:sub_name"`
 	Enabled  bool   `gorm:"column:enabled;not null"`
-	Password string `gorm:"column:password;not null"`
+	Password string `gorm:"column:password;not null" json:"-"`
 
 	GoUserRoleId uint `gorm:"column:role_id;not null"`
 	GoUserRole   GoUserRole

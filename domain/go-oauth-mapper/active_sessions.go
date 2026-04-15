@@ -9,7 +9,7 @@ import (
 	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
-func MapLoginSessionsToRest(sessions []gooauthmodel.GoUserDataLogin, aesEncrypt, tokenString string) []gooauthrest.LoginSessionRest {
+func MapLoginSessionsToRest(sessions []gooauthmodel.GoUserDataLogin, aesEncrypt, refreshToken string) []gooauthrest.LoginSessionRest {
 	var result []gooauthrest.LoginSessionRest
 	for _, session := range sessions {
 
@@ -17,10 +17,10 @@ func MapLoginSessionsToRest(sessions []gooauthmodel.GoUserDataLogin, aesEncrypt,
 		if err != nil {
 			ipDecrypt = "Desconocido"
 		}
-		tokenDecrypt, err := eliotlibs.Decrypt(session.Token, aesEncrypt)
+		refreshTokenDecrypt, err := eliotlibs.Decrypt(*session.RefreshToken, aesEncrypt)
 		isThis := false
 		if err == nil {
-			isThis = tokenDecrypt == tokenString
+			isThis = refreshTokenDecrypt == refreshToken
 		}
 
 		var ipResponse gooauthrequest.IPInfoRequest

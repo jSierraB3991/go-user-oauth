@@ -13,7 +13,7 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
-func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, req gooauthrequest.GoLoginRequestTwoFactor, saveLoginHistory bool) (*gooauthrest.JWT, error) {
+func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, req gooauthrequest.GoLoginRequestTwoFactor) (*gooauthrest.JWT, error) {
 	userName := strings.ToLower(req.UserName)
 
 	user, err := s.repo.GetUserByEmail(ctx, userName)
@@ -46,21 +46,23 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, req gooauthrequ
 		return nil, gooautherror.InvalidCodeTwoFactorOauthError{}
 	}
 
+	refreshToken := generateRefreshToken()
 	tokenString, exp, err := s.GetJwtToken(ctx, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName, req.IsRemenber)
 	if err != nil {
 		s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Error al crear el token", true)
 		return nil, err
 	}
 
-	if saveLoginHistory {
-		err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, tokenString, user.UserId, false)
+	if s.saveLoginHistory {
+		err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, refreshToken, user.UserId, false)
 		if err != nil {
 			log.Printf("ERROR: SAING DATA LOGIN %v", err)
 		}
 	}
+
 	return &gooauthrest.JWT{
 		AccessToken:  tokenString,
-		RefreshToken: tokenString,
+		RefreshToken: refreshToken,
 		ExpiredIn:    exp,
 		Role:         user.GoUserRole.RoleName,
 	}, nil

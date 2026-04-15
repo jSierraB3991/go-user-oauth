@@ -2,7 +2,6 @@ package gooauthservice
 
 import (
 	"context"
-	"strconv"
 	"strings"
 
 	gooauthmapper "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-mapper"
@@ -38,5 +37,5 @@ func (s *GoOauthService) CreateUser(ctx context.Context, userParam gooauthreques
 	if err != nil {
 		return "", err
 	}
-	return strconv.Itoa(int(user.UserId)), nil
+	return eliotlibs.GetFloatStringToUInt(user.UserId), nil
 }

@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang-jwt/jwt"
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
 func (s *GoOauthService) GenerateValidateMail(ctx context.Context, mailSend, keyToGenerateToken string) (string, error) {
@@ -39,7 +40,7 @@ func (s *GoOauthService) ValidateMailByUserId(ctx context.Context, userId string
 		return err
 	}
 
-	user, err := s.repo.GetUserById(ctx, uint(userInt))
+	user, err := s.repo.GetUserById(ctx, eliotlibs.ConvertIntToUint(userInt))
 	if err != nil {
 		return err
 	}

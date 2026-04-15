@@ -1,0 +1,68 @@
+package gooauthrepository
+
+import (
+	"context"
+	"log"
+	"time"
+
+	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
+	eliotlibs "github.com/jSierraB3991/jsierra-libs"
+)
+
+func (repo *Repository) GetSessionsByEmailRefreshTokenE(ctx context.Context, email, refreshTokenE string) ([]gooauthmodel.GoUserDataLogin, error) {
+
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	user := db.Select("id").Model(&gooauthmodel.GoUserUser{}).Where("email = ?", email)
+
+	var result []gooauthmodel.GoUserDataLogin
+	err = db.Where("is_available = ? AND user_id IN (?) AND refresh_token = ?", true, user, refreshTokenE).Find(&result).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func (repo *Repository) RemoveSessionById(ctx context.Context, idSession uint) error {
+
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return err
+	}
+	return db.Model(&gooauthmodel.GoUserDataLogin{}).Where("id = ?", idSession).Update("is_available", false).Error
+}
+
+func (repo *Repository) GetDataLoginSessions(ctx context.Context, page *eliotlibs.Paggination) ([]gooauthmodel.GoUserDataLogin, error) {
+	var result []gooauthmodel.GoUserDataLogin
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		log.Printf("ERROR GET DB %s", err.Error())
+		return nil, err
+	}
+	args := []eliotlibs.PagginationParam{
+		{Where: "user_id = ?", Data: []interface{}{page.Data}},
+	}
+	preloads := []eliotlibs.PreloadParams{}
+	err = db.Scopes(repo.paginate_with_param(ctx, result, page, args, preloads)).Find(&result).Error
+	if err != nil {
+		log.Printf("ERROR GET LOGIN SESSIONS %s", err.Error())
+		return nil, err
+	}
+	return result, nil
+}
+
+func (repo *Repository) RemoveSessionsPreDate(ctx context.Context, limit time.Time) error {
+	db, err := repo.WithTenant(ctx)
+	if err != nil {
+		return err
+	}
+
+	return db.Model(&gooauthmodel.GoUserDataLogin{}).
+		Where("is_available = ?", true).
+		Where("updated_at <= ?", limit).
+		Update("is_available", false).Error
+}

@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/casbin/casbin/v3 v3.10.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
-	github.com/jSierraB3991/jsierra-libs v0.7.7
+	github.com/jSierraB3991/jsierra-libs v0.7.8
 	github.com/pquerna/otp v1.5.0
 	golang.org/x/crypto v0.50.0
 	gorm.io/gorm v1.31.1

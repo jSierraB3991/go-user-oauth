@@ -13,7 +13,7 @@ type GoUserDataLogin struct {
 	UserAgent           string    `gorm:"column:user_agent;not null"`
 	IpResponse          string    `gorm:"column:info_response"`
 	IsLoginWithPassword bool      `gorm:"column:is_login_with_password;not null"`
-	Token               string    `gorm:"column:token;not null"`
+	RefreshToken        *string   `gorm:"column:refresh_token"`
 	GoUserUserId        uint      `gorm:"column:user_id;not null"`
 	IsAvailable         bool      `gorm:"column:is_available;not null;default:true"`
 	Fecha               time.Time `gorm:"column:fecha;not null"`

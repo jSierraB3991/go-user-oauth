@@ -43,13 +43,16 @@ func CasbinEchoConfig(requets *http.Request, e *casbin.Enforcer) error {
 		log.Printf("Error GET ROLE NAME %v", err)
 		return nil
 	}
-
-	log.Printf("roleName %s, path %s, method %s", roleName, path, method)
+	// #nosec G706
+	log.Printf(
+		"roleName=%q path=%q method=%q",
+		eliotlibs.SanitizeLog(roleName),
+		eliotlibs.SanitizeLog(path),
+		eliotlibs.SanitizeLog(method),
+	)
 	ok, err := e.Enforce(roleName, path, method)
 	if err != nil || !ok {
-		log.Println("CASBIN ERROR")
 		log.Println(err)
-		log.Println(ok)
 		return gooautherror.InvalidCasbinAccess{}
 	}
 

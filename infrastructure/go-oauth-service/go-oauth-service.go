@@ -19,20 +19,21 @@ type GoOauthService struct {
 	aesKeyForEncrypt        string
 	timeToExpiredQrForOauth time.Duration
 	genericPasswordForAdmin string
+	saveLoginHistory        bool
 }
 
 func NewGoOauthService(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
-	timeToExpiredQrForOauth time.Duration, genericPasswordForAdmin string) *GoOauthService {
+	timeToExpiredQrForOauth time.Duration, genericPasswordForAdmin string, saveLoginHistory bool) *GoOauthService {
 	return NewGoOauthServiceWithSchemas(database,
 		secretForJwt,
 		aesKeyForEncrypt,
 		timeToExpiredQrForOauth,
-		[]string{"public"}, genericPasswordForAdmin)
+		[]string{"public"}, genericPasswordForAdmin, saveLoginHistory)
 }
 
 func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
 	timeToExpiredQrForOauth time.Duration,
-	schemas []string, genericPasswordForAdmin string) *GoOauthService {
+	schemas []string, genericPasswordForAdmin string, saveLoginHistory bool) *GoOauthService {
 	repo := gooauthrepository.InitiateRepo(database)
 	err := repo.RunMigrations(schemas)
 	if err != nil {
@@ -46,6 +47,7 @@ func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncr
 		aesKeyForEncrypt:        aesKeyForEncrypt,
 		timeToExpiredQrForOauth: timeToExpiredQrForOauth,
 		genericPasswordForAdmin: genericPasswordForAdmin,
+		saveLoginHistory:        saveLoginHistory,
 	}
 }
 func (GoOauthService) ErrorHandler() error {

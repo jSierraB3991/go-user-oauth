@@ -17,8 +17,8 @@ type GoOauthInterface interface {
 	UpdateUser(ctx context.Context, keyCloakUserId string, attributes *map[string][]string, req gooauthrequest.UpdateUserRequest) error
 	ErrorHandler() error
 	GetUserByRole(ctx context.Context, role string) ([]*gooauthrest.User, error)
-	LoginUser(ctx context.Context, req gooauthrequest.GoLoginRequest, saveLoginHistory bool) (*gooauthrest.JWT, error)
-	LoginWithTwoFactor(ctx context.Context, req gooauthrequest.GoLoginRequestTwoFactor, saveLoginHistory bool) (*gooauthrest.JWT, error)
+	LoginUser(ctx context.Context, req gooauthrequest.GoLoginRequest) (*gooauthrest.JWT, error)
+	LoginWithTwoFactor(ctx context.Context, req gooauthrequest.GoLoginRequestTwoFactor) (*gooauthrest.JWT, error)
 
 	GetUserByUserId(ctx context.Context, keycloakId string) (*gooauthrest.User, error)
 	GetUserByEmail(ctx context.Context, email string) (*gooauthrest.User, error)
@@ -47,8 +47,8 @@ type GoOauthInterface interface {
 	ChangePasswordToGeneric(ctx context.Context, kUserId string) error
 
 	GetInvalidLogins(ctx context.Context, page *eliotlibs.Paggination) (*gooauthrest.InvalidLoginRestPagg, error)
-	GetActiveSessions(ctx context.Context, email, tokenString string, page, limit int) (*gooauthrest.LoginSessionRestPagination, error)
-	RemoveSessionByToken(ctx context.Context, email, tokenString string) error
+	GetActiveSessions(ctx context.Context, email, refreshToken string, page, limit int) (*gooauthrest.LoginSessionRestPagination, error)
+	RemoveSessionByRefreshToken(ctx context.Context, email, refreshToken string) error
 	RemoveSessionById(ctx context.Context, sessionId uint) error
 
 	RemoveUserTwoMonthsNoValidate(ctx context.Context, usersNoRemove []string) ([]string, error)
