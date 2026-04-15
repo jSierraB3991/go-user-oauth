@@ -54,4 +54,7 @@ type GoOauthInterface interface {
 	RemoveUserTwoMonthsNoValidate(ctx context.Context, usersNoRemove []string) ([]string, error)
 
 	UpdateOneAttr(ctx context.Context, keyCloakUserId string, attribute string, value string) error
+
+	ValidateTokenIsValidSession(ctx context.Context, tokenStr string) error
+	RefreshToken(ctx context.Context, refreshToken string) (*gooauthrest.JWT, error)
 }

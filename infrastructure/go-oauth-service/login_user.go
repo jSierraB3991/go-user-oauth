@@ -37,7 +37,16 @@ func (s *GoOauthService) LoginUser(ctx context.Context, req gooauthrequest.GoLog
 	}
 
 	refreshToken := generateRefreshToken()
-	tokenString, exp, err := s.GetJwtToken(ctx, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName, req.IsRemenber)
+
+	var sessionId uint
+	if s.saveLoginHistory {
+		sessionId, err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, refreshToken, user.UserId, true)
+		if err != nil {
+			log.Printf("ERROR: SAING DATA LOGIN %v", err)
+		}
+	}
+
+	tokenString, exp, err := s.GetJwtToken(ctx, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName, sessionId, req.IsRemenber)
 	if err != nil {
 		if s.saveLoginHistory {
 			s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Error al generar el token", false)
@@ -49,13 +58,6 @@ func (s *GoOauthService) LoginUser(ctx context.Context, req gooauthrequest.GoLog
 		return &gooauthrest.JWT{
 			IsTwoFactor: true,
 		}, nil
-	}
-
-	if s.saveLoginHistory {
-		err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, refreshToken, user.UserId, true)
-		if err != nil {
-			log.Printf("ERROR: SAING DATA LOGIN %v", err)
-		}
 	}
 
 	return &gooauthrest.JWT{

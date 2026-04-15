@@ -17,6 +17,7 @@ type GoUserDataLogin struct {
 	GoUserUserId        uint      `gorm:"column:user_id;not null"`
 	IsAvailable         bool      `gorm:"column:is_available;not null;default:true"`
 	Fecha               time.Time `gorm:"column:fecha;not null"`
+	ExpiresAt           time.Time `gorm:"column:expires_at;not null"`
 	GoUserUser          GoUserUser
 }
 

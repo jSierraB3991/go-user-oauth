@@ -47,17 +47,18 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, req gooauthrequ
 	}
 
 	refreshToken := generateRefreshToken()
-	tokenString, exp, err := s.GetJwtToken(ctx, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName, req.IsRemenber)
-	if err != nil {
-		s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Error al crear el token", true)
-		return nil, err
-	}
-
+	var sessionId uint
 	if s.saveLoginHistory {
-		err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, refreshToken, user.UserId, false)
+		sessionId, err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, refreshToken, user.UserId, false)
 		if err != nil {
 			log.Printf("ERROR: SAING DATA LOGIN %v", err)
 		}
+	}
+
+	tokenString, exp, err := s.GetJwtToken(ctx, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName, sessionId, req.IsRemenber)
+	if err != nil {
+		s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Error al crear el token", true)
+		return nil, err
 	}
 
 	return &gooauthrest.JWT{

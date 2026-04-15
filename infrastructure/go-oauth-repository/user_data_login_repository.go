@@ -8,13 +8,17 @@ import (
 	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
 
-func (repo *Repository) SaveDataLogin(ctx context.Context, dataLogin gooauthmodel.GoUserDataLogin) error {
+func (repo *Repository) SaveDataLogin(ctx context.Context, dataLogin gooauthmodel.GoUserDataLogin) (uint, error) {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
-	return db.Save(&dataLogin).Error
+	err = db.Save(&dataLogin).Error
+	if err != nil {
+		return 0, err
+	}
+	return dataLogin.UserDataLoginId, nil
 }
 
 func (repo *Repository) SaveInvalidLogin(ctx context.Context, invalidDataLogin gooauthmodel.GoUserInvalidGoAuth) {

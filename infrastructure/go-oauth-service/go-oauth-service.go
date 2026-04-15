@@ -54,7 +54,7 @@ func (GoOauthService) ErrorHandler() error {
 	return gooautherror.InactiveTokenError{}
 }
 
-func (s *GoOauthService) GetJwtToken(ctx context.Context, userId, roleId uint, email, roleName string, remenber bool) (string, int, error) {
+func (s *GoOauthService) GetJwtToken(ctx context.Context, userId, roleId uint, email, roleName string, sessionId uint, remenber bool) (string, int, error) {
 
 	exp := int(0)
 	pathsAllow, err := s.repo.GetPathAllowByUser(ctx, userId)
@@ -68,6 +68,7 @@ func (s *GoOauthService) GetJwtToken(ctx context.Context, userId, roleId uint, e
 		gooauthlibs.EMAIL_CONSTANT: email,
 		gooauthlibs.ROLE_NAME:      roleName,
 		gooauthlibs.ROLE_ID:        roleId,
+		gooauthlibs.SESSION_ID:     sessionId,
 	}
 	if !remenber {
 		exp = GetExp()
@@ -84,5 +85,5 @@ func (s *GoOauthService) GetJwtToken(ctx context.Context, userId, roleId uint, e
 }
 
 func GetExp() int {
-	return int(time.Now().Add(24 * time.Hour).Unix())
+	return int(time.Now().Add(15 * time.Minute).Unix())
 }

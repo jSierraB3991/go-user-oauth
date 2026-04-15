@@ -19,4 +19,5 @@ const (
 	PATH_ALLOW = "paths_allow"
 	IAT        = "iat"
 	EXP        = "exp"
+	SESSION_ID = "session_id"
 )
