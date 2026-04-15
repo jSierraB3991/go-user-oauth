@@ -28,11 +28,15 @@ func (s *GoOauthService) ValidateTokenIsValidSession(ctx context.Context, tokenS
 		return err
 	}
 
-	if session == nil {
+	if session == nil || !session.IsAvailable {
 		return gooautherror.NotFoundSessionError{}
 	}
 
 	if session.ExpiresAt.Before(time.Now()) {
+		err := s.repo.RemoveSessionById(ctx, sid)
+		if err != nil {
+			return err
+		}
 		return gooautherror.SessionExpiredError{}
 	}
 
