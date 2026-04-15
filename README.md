@@ -1,344 +1,343 @@
-# Go User OAuth
+<div align="center">
+  <h1>🛡️ Go User OAuth</h1>
+  <p><strong>Un módulo de Golang robusto para la centralización de usuarios con soporte nativo para autenticación, gestión avanzada, sesiones y autenticación de dos factores (2FA).</strong></p>
+  
+  [![Go Version](https://img.shields.io/badge/Go-%3E%3D%201.21-00ADD8?style=flat&logo=go)](https://golang.org/)
+  [![License](https://img.shields.io/badge/License-GPLv3-green.svg)](https://www.gnu.org/licenses/gpl-3.0)
+</div>
 
-Un módulo de Golang para la centralización de usuarios con soporte para autenticación, gestión de usuarios y autenticación de dos factores.
+---
 
-## Instalación
+## 📖 Tabla de Contenidos
 
-Para instalar la versión más reciente del módulo:
+- [✨ Características Principales](#-características-principales)
+- [⚙️ Instalación](#️-instalación)
+- [🚀 Inicialización](#-inicialización)
+- [💻 Uso en Servicios Arquitectura Limpia](#-uso-en-servicios-arquitectura-limpia)
+- [🔌 Interfaz `GoOauthInterface`](#-interfaz-gooauthinterface)
+- [📦 Modelos Principales](#-modelos-principales)
+- [🎯 Ejemplos Extendidos](#-ejemplos-extendidos)
+- [🤝 Contribución](#-contribución)
+- [📄 Licencia](#-licencia)
+
+---
+
+## ✨ Características Principales
+
+- 🔐 **Autenticación Completa**: Login seguro con JWT y gestión mediante *Refresh Tokens*.
+- 🛡️ **Autenticación de Dos Factores (2FA)**: Soporte completo de TOTP y códigos QR.
+- 👥 **Gestión de Usuarios Avanzada**: CRUD de usuarios, roles, búsqueda paginada y atributos extensibles.
+- 📱 **Gestión de Sesiones**: Control y auditoría de sesiones activas, cierre de sesión remoto.
+- 📧 **Comunicaciones**: Validación de emails, restablecimiento de contraseñas (con y sin 2FA).
+- 🛠️ **Administración**: Creación y validación de usuarios administradores.
+
+---
+
+## ⚙️ Instalación
+
+Para integrar el módulo a tu proyecto, instala la última versión:
 
 ```go
 go get github.com/jSierraB3991/go-user-oauth
 ```
 
-Para instalar una versión específica:
+O si necesitas anclar una versión específica:
 
 ```go
 go get github.com/jSierraB3991/go-user-oauth@v0.3.6
 ```
 
-## Inicialización
+---
 
-La inicialización del servicio debe realizarse en el archivo `main.go` de tu aplicación:
+## 🚀 Inicialización
+
+El núcleo de este módulo debe ser instanciado en tu archivo de arranque (p.ej. `main.go`).
 
 ```go
 package main
 
 import (
-    "time"
-    "gorm.io/gorm"
-    
-    gooauthservice "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-service"
-    gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
+	"time"
+
+	"gorm.io/gorm"
+	
+	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
+	gooauthservice "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-service"
 )
 
 func main() {
-    // Configuración previa
-    var database *gorm.DB // Tu conexión a la base de datos
-    jwtSecret := "tu-clave-secreta-para-jwt"
-    aesEncryptKey := "tu-clave-para-encriptar"
-    appName := "Mi Aplicación"
-    appImageUrl := "https://miapp.com/logo.png"
-    
-    // Tiempo máximo para usar el QR de doble autenticación
-    timeToQrToTwoFactorInMinutes := time.Duration(10)
-    
-    // Inicializar el servicio OAuth
-    oauthService := gooauthservice.NewGoOauthService(
-        database, 
-        jwtSecret, 
-        aesEncryptKey, 
-        gooauthmodel.ServiceModeParam{
-            AppName: appName,
-            UrlImagenApp: appImageUrl,
-        }, 
-        timeToQrToTwoFactorInMinutes,
-    )
-    
-    // Continuar con la inicialización de otros servicios...
+	// ... Configuración de Base de Datos y entono
+	var database *gorm.DB // Instancia viva de *gorm.DB (postgres, mysql, etc.)
+	
+	// Variables de entorno o secrectos
+	jwtSecret := "MI_SUPER_SECRETO_PARA_JWT"
+	aesEncryptKey := "CLAVE_DE_ENCRIPTACION_32_BYTES" // 16, 24, o 32 bytes
+	appName := "Mi App Increíble"
+	appImageUrl := "https://miapp.com/assets/logo.png"
+	
+	// Tiempo máximo de expiración para el QR del 2FA
+	timeToQrToTwoFactorInMinutes := time.Duration(10)
+	
+	oauthService := gooauthservice.NewGoOauthService(
+		database, 
+		jwtSecret, 
+		aesEncryptKey, 
+		gooauthmodel.ServiceModeParam{
+			AppName:      appName,
+			UrlImagenApp: appImageUrl,
+		}, 
+		timeToQrToTwoFactorInMinutes,
+	)
+	
+	// Inyectar en tus servicios (Ver la siguiente sección)
 }
 ```
 
-### Parámetros de inicialización
+### 📋 Parámetros de inicialización
 
-- `database`: Conexión a la base de datos (`*gorm.DB`)
-- `jwtSecret`: Clave secreta para crear tokens JWT
-- `aesEncryptKey`: Clave para encriptar datos sensibles en la base de datos
-- `appName` y `appImageUrl`: Información para configurar la autenticación de dos factores
-- `timeToQrToTwoFactorInMinutes`: Tiempo máximo para que los usuarios puedan usar el QR de doble autenticación
+| Parámetro | Tipo | Descripción |
+| :--- | :--- | :--- |
+| `database` | `*gorm.DB` | Conexión GORM activa. |
+| `jwtSecret` | `string` | Secreto para firmar tokens JWT para las sesiones. |
+| `aesEncryptKey` | `string` | Llave AES simétrica para encriptación de datos sensibles. |
+| `serviceModeParam` | `struct` | Configuración estética (Nombre de la App, Logo) para correos y 2FA. |
+| `timeToQr...` | `time.Duration` | Tiempo de vida para vincular un dispositivo TOTP mediante QR. |
 
-## Uso en Servicios
+---
 
-Para utilizar el servicio OAuth en tus propios servicios (por ejemplo, en un servicio de usuarios):
+## 💻 Uso en Servicios Arquitectura Limpia
+
+Inyecta la interfaz `GoOauthInterface` en cualquier controlador o servicio que requiera acciones de autenticación.
 
 ```go
 package services
 
 import (
-    gooauthinterface "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-interface"
-    repositoryinterface "miaplicacion/domain/repository-interface"
+	gooauthinterface "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-interface"
 )
 
-type UserService struct {
-    oauthService gooauthinterface.GoOauthInterface
-    repo repositoryinterface.UserRepositoryInterface
+type AuthService struct {
+	oauthService gooauthinterface.GoOauthInterface
+	// Otras dependencias...
 }
 
-func NewUserService(
-    oauthService gooauthinterface.GoOauthInterface,
-    repo repositoryinterface.UserRepositoryInterface,
-) *UserService {
-    return &UserService{
-        oauthService: oauthService,
-        repo: repo,
-    }
+func NewAuthService(oauthService gooauthinterface.GoOauthInterface) *AuthService {
+	return &AuthService{
+		oauthService: oauthService,
+	}
 }
-
-// Implementa tus métodos del servicio aquí...
 ```
 
-## Interfaz GoOauthInterface
+---
 
-La interfaz `GoOauthInterface` proporciona métodos para:
+## 🔌 Interfaz `GoOauthInterface`
 
-- Autenticación y autorización de usuarios
-- Creación y actualización de usuarios
-- Gestión de autenticación de dos factores
-- Cambio y recuperación de contraseñas
-- Validación de correos electrónicos
+La interfaz ha evolucionado bastante, soportando de manera estructurada la mayoría de casos de uso requeridos en plataformas modernas. **Esta es la declaración completa obligatoria:**
 
 ```go
 type GoOauthInterface interface {
-    CheckoutMiddleware(requets *http.Request) bool
-    GetSecretByClient(ctx context.Context) error
-    CreateUser(ctx context.Context, userParam gooauthrequest.CreateUser, roleUser string, attributes *map[string][]string) (string, error)
-    UpdateUser(ctx context.Context, keyCloakUserId string, attributes *map[string][]string, req gooauthrequest.UpdateUserRequest) error
-    ErrorHandler() error
-    GetUserByRole(ctx context.Context, role string) ([]*gooauthrest.User, error)
-    LoginUser(ctx context.Context, req gooauthrequest.GoLoginRequest, saveLoginHistory bool) (*gooauthrest.JWT, error)
-    LoginWithTwoFactor(ctx context.Context, req gooauthrequest.GoLoginRequestTwoFactor, saveLoginHistory bool) (*gooauthrest.JWT, error)
-    GetUserByUserId(ctx context.Context, keycloakId string) (*gooauthrest.User, error)
-    GetUsersByUsersId(ctx context.Context, keycloakUsersId []string) ([]gooauthrest.User, error)
-    ChangePassword(ctx context.Context, req gooauthrequest.ChangePasswordRequest) error
-    ValidateMailByUserId(ctx context.Context, userId string) error
-    GenerateQrForDobleOuath(userName string) (*gooauthrest.QrTwoOauthRest, error)
-    ValidateCodeOtp(req gooauthrequest.ValidateOauthCodeRequest) (bool, error)
-    GeneratetokenToValidate(userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error)
-    RemenberPassword(token, newPassword, codeTwoFactor string) error
-    IsActiveTwoFactorOauth(token string) (bool, error)
-    IsActiveTwoFactor(user string) (bool, error)
-    DisAvailableTwoFactorAuth(userEmail, codeTwoFactor string) error
+	// --- Gestión de Request / Errores ---
+	CheckoutMiddleware(requets *http.Request) bool
+	GetSecretByClient(ctx context.Context) error
+	ErrorHandler() error
+
+	// --- Gestión de Autenticación y Tokens ---
+	LoginUser(ctx context.Context, req gooauthrequest.GoLoginRequest) (*gooauthrest.JWT, error)
+	LoginWithTwoFactor(ctx context.Context, req gooauthrequest.GoLoginRequestTwoFactor) (*gooauthrest.JWT, error)
+	ValidateTokenIsValidSession(ctx context.Context, tokenStr string) error
+	RefreshToken(ctx context.Context, refreshToken string) (*gooauthrest.JWT, error)
+
+	// --- Gestión de Usuarios (CRUD y Consultas) ---
+	CreateUser(ctx context.Context, userParam gooauthrequest.CreateUser, roleUser string, attributes *map[string][]string) (string, error)
+	UpdateUser(ctx context.Context, keyCloakUserId string, attributes *map[string][]string, req gooauthrequest.UpdateUserRequest) error
+	UpdateOneAttr(ctx context.Context, keyCloakUserId string, attribute string, value string) error
+	
+	GetUserByRole(ctx context.Context, role string) ([]*gooauthrest.User, error)
+	GetUserByUserId(ctx context.Context, keycloakId string) (*gooauthrest.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*gooauthrest.User, error)
+	GetUserByName(ctx context.Context, name string, page *eliotlibs.Paggination) ([]string, error)
+	GetUsersByUsersId(ctx context.Context, keycloakUsersId []string) ([]gooauthrest.User, error)
+	GetUsersByEmail(ctx context.Context, emails []string) ([]gooauthrest.User, error)
+
+	// --- Credenciales, Contraseñas y Validaciones ---
+	ChangePassword(ctx context.Context, req gooauthrequest.ChangePasswordRequest) error
+	RemenberPassword(ctx context.Context, token, newPassword, codeTwoFactor string) error
+	ValidateMailByUserId(ctx context.Context, userId string) error
+	GeneratetokenToValidate(ctx context.Context, userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error)
+	GenerateValidateMail(ctx context.Context, mailSend, keyToGenerateToken string) (string, error)
+
+	// --- Autenticación Dos Factores (2FA) ---
+	GenerateQrForDobleOuath(ctx context.Context, userName, appName, imageUrl string) (*gooauthrest.QrTwoOauthRest, error)
+	ValidateCodeOtp(ctx context.Context, req gooauthrequest.ValidateOauthCodeRequest) (bool, error)
+	IsActiveTwoFactorOauth(ctx context.Context, token string) (bool, error)
+	IsActiveTwoFactor(ctx context.Context, user string) (bool, error)
+	DisAvailableTwoFactorAuth(ctx context.Context, userEmail, codeTwoFactor string) error
+
+	// --- Administración y Mantenimiento de Usuarios ---
+	CreateUserAdministrator(ctx context.Context, userEmail, userpassword, appName string, attributes *map[string][]string) (string, error)
+	ExistsUserAdministrator(ctx context.Context) (bool, error)
+	ChangeEmailByAdmin(ctx context.Context, kUserId, newEmail string) error
+	ChangePasswordToGeneric(ctx context.Context, kUserId string) error
+	RemoveUserTwoMonthsNoValidate(ctx context.Context, usersNoRemove []string) ([]string, error)
+
+	// --- Sesiones e Inicios de Sesión y Auditoría ---
+	GetInvalidLogins(ctx context.Context, page *eliotlibs.Paggination) (*gooauthrest.InvalidLoginRestPagg, error)
+	GetActiveSessions(ctx context.Context, email, refreshToken string, page, limit int) (*gooauthrest.LoginSessionRestPagination, error)
+	RemoveSessionByRefreshToken(ctx context.Context, email, refreshToken string) error
+	RemoveSessionById(ctx context.Context, sessionId uint) error
 }
 ```
 
-## Modelos Principales
+---
 
-### CreateUser
+## 📦 Modelos Principales
+
+A continuación se listan las estructuras de datos vitales para usar el módulo:
+
+### `CreateUser`
 ```go
 type CreateUser struct {
-    Email       string `json:"email"`
-    UserName    string `json:"-"`
-    Password    string `json:"password"`
-    FirstName   string `json:"first_name"`
-    LastName    string `json:"last_name"`
-    Emailverify bool   `json:"-"`
+	Email       string `json:"email"`
+	UserName    string `json:"-"`
+	Password    string `json:"password"`
+	FirstName   string `json:"first_name"`
+	LastName    string `json:"last_name"`
+	Emailverify bool   `json:"-"`
 }
 ```
 
-### UpdateUserRequest
+### `UpdateUserRequest`
 ```go
 type UpdateUserRequest struct {
-    FirstName string `json:"first_name"`
-    LastName  string `json:"last_name"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
 ```
 
-### User
+### `User` (Rest)
 ```go
 type User struct {
-    Id         string              `json:"id"`
-    Email      string              `json:"email"`
-    Name       string              `json:"name"`
-    SubName    string              `json:"sub_name"`
-    Enabled    bool                `json:"enabled"`
-    Password   string              `json:"password"`
-    Role       string              `json:"role"`
-    Attributes *map[string][]string `json:"attributtes"`
+	Id         string               `json:"id"`
+	Email      string               `json:"email"`
+	Name       string               `json:"name"`
+	SubName    string               `json:"sub_name"`
+	Enabled    bool                 `json:"enabled"`
+	Password   string               `json:"password"`
+	Role       string               `json:"role"`
+	Attributes *map[string][]string `json:"attributtes"` // Metadatos extras
 }
 ```
 
-### JWT
+### `JWT`
 ```go
 type JWT struct {
-    AccessToken  string `json:"access_token"`
-    RefreshToken string `json:"refresh_token"`
-    ExpiredIn    int    `json:"expired_in"`
-    Role         string `json:"role"`
-    IsTwoFactor  bool   `json:"is_two_factor"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	ExpiredIn    int    `json:"expired_in"`
+	Role         string `json:"role"`
+	IsTwoFactor  bool   `json:"is_two_factor"`
 }
 ```
 
-## Atributos Personalizados
+---
 
-Los atributos son extensiones del modelo de usuario que pueden utilizarse para almacenar información adicional:
+## 🎯 Ejemplos Extendidos
+
+### 1. Iniciar Sesión (Login) y Uso de 2FA
+Un flujo clásico para autenticar un usuario verificando si requiere segundo factor de autenticación.
 
 ```go
-func GetAttributtesSingUp(req request.SingUpRequest *map[string][]string {
-    attributes := make(map[string][]string)
-    attributes["gender"] = []string{req.Gender}
-    return &attributes
+func (s *AuthService) SignIn(ctx context.Context, email, password string) (*gooauthrest.JWT, error) {
+	req := gooauthrequest.GoLoginRequest{
+		Email:    email,
+		Password: password,
+	}
+
+	// El servicio internamente guarda el historial y valida intentos fallidos
+	return s.oauthService.LoginUser(ctx, req)
+}
+
+func (s *AuthService) Verify2FA(ctx context.Context, email, password, otpCode string) (*gooauthrest.JWT, error) {
+	req := gooauthrequest.GoLoginRequestTwoFactor{
+		Email:     email,
+		Password:  password,
+		CodeOauth: otpCode,
+	}
+
+	return s.oauthService.LoginWithTwoFactor(ctx, req)
 }
 ```
 
-## Ejemplo Completo
-
-A continuación se muestra un ejemplo completo de cómo inicializar el servicio en `main.go` y usarlo en un servicio de usuario:
+### 2. Gestión de Sesiones Activas
+Ideal para mostrar la pantalla de "Dispositivos conectados" permitiendo cerrar sesiones activas remótamente.
 
 ```go
-// main.go
-package main
+// Listado de sesiones activas paginadas
+func (s *AuthService) GetSessions(ctx context.Context, email, refreshToken string) (*gooauthrest.LoginSessionRestPagination, error) {
+	page, limit := 1, 10
+	return s.oauthService.GetActiveSessions(ctx, email, refreshToken, page, limit)
+}
 
-import (
-    "log"
-    "time"
-    
-    "gorm.io/driver/postgres"
-    "gorm.io/gorm"
-    
-    gooauthservice "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-service"
-    gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
-    
-    "miapp/infrastructure/repositories"
-    "miapp/domain/services"
-)
-
-func main() {
-    // Conexión a la base de datos
-    dsn := "host=localhost user=postgres password=postgres dbname=miapp port=5432 sslmode=disable"
-    database, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-    if err != nil {
-        log.Fatalf("Error al conectar a la base de datos: %v", err)
-    }
-    
-    // Configuración del servicio OAuth
-    jwtSecret := "mi-clave-super-secreta-jwt"
-    aesEncryptKey := "clave-para-encriptar-16bytes"
-    appName := "Mi Aplicacion"
-    appImageUrl := "https://miapp.com/logo.png"
-    timeToQrToTwoFactorInMinutes := time.Duration(10)
-    
-    // Inicializar el servicio OAuth
-    oauthService := gooauthservice.NewGoOauthService(
-        database, 
-        jwtSecret, 
-        aesEncryptKey, 
-        gooauthmodel.ServiceModeParam{
-            AppName: appName,
-            UrlImagenApp: appImageUrl,
-        }, 
-        timeToQrToTwoFactorInMinutes,
-    )
-    
-    // Inicializar repositorio de usuarios
-    userRepository := repositories.NewUserRepository(database)
-    
-    // Inicializar servicio de usuarios
-    userService := services.NewUserService(oauthService, userRepository)
-    
-    // Continuar con la configuración del servidor, rutas, etc.
-    // ...
+// Cerrar sesión / revocación
+func (s *AuthService) Logout(ctx context.Context, email, refreshToken string) error {
+	return s.oauthService.RemoveSessionByRefreshToken(ctx, email, refreshToken)
 }
 ```
+
+### 3. Registro de Usuario con Atributos Flexibles
 
 ```go
-// services/user_service.go
-package services
+func (s *AuthService) Register(ctx context.Context, payload RegisterPayload) (string, error) {
+	createUserReq := gooauthrequest.CreateUser{
+		Email:       payload.Email,
+		UserName:    payload.Email,
+		Password:    payload.Password,
+		FirstName:   payload.FirstName,
+		LastName:    payload.LastName,
+		Emailverify: false,
+	}
 
-import (
-    "context"
-    "time"
-    
-    gooauthinterface "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-interface"
-    gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
-    
-    "miapp/domain/models"
-    "miapp/domain/repositories"
-    "miapp/domain/request"
-)
+	// Atributos extendidos que puedes usar para lo que requieras
+	attributes := map[string][]string{
+		"gender":           {payload.Gender},
+		"terms_accepted":   {"true"},
+		"registration_ip":  {"192.168.1.1"},
+	}
 
-type UserService struct {
-    oauthService gooauthinterface.GoOauthInterface
-    repo        repositories.UserRepositoryInterface
+	userId, err := s.oauthService.CreateUser(ctx, createUserReq, "USER", &attributes)
+	if err != nil {
+		return "", err
+	}
+
+	return userId, nil
 }
-
-func NewUserService(
-    oauthService gooauthinterface.GoOauthInterface,
-    repo repositories.UserRepositoryInterface,
-) *UserService {
-    return &UserService{
-        oauthService: oauthService,
-        repo: repo,
-    }
-}
-
-// Ejemplo de método para registrar un usuario
-func (s *UserService) RegisterUser(ctx context.Context, req request.SingUpRequest) (string, error) {
-    // Preparar los atributos personalizados
-    attributes := getAttributesSignUp(req)
-    
-    // Crear usuario en el servicio OAuth
-    createUserReq := gooauthrequest.CreateUser{
-        Email:      req.Email,
-        UserName:   req.Email, // Usamos el email como nombre de usuario
-        Password:   req.Password,
-        FirstName:  req.FirstName,
-        LastName:   req.LastName,
-        Emailverify: true,
-    }
-    
-    // Crear el usuario con el rol "USER"
-    userId, err := s.oauthService.CreateUser(ctx, createUserReq, "USER", attributes)
-    if err != nil {
-        return "", err
-    }
-    
-    // Guardar información adicional en nuestra base de datos
-    user := models.User{
-        ID:        userId,
-        Email:     req.Email,
-        FirstName: req.FirstName,
-        LastName:  req.LastName,
-        CreatedAt: time.Now(),
-    }
-    
-    err = s.repo.Create(ctx, &user)
-    if err != nil {
-        return "", err
-    }
-    
-    return userId, nil
-}
-
-// Función para generar atributos para el registro
-func getAttributesSignUp(req request.SingUpRequest) *map[string][]string {
-    attributes := make(map[string][]string)
-    attributes["gender"] = []string{req.Gender}
-    return &attributes
-}
-
-// Añade más métodos según sea necesario...
 ```
 
-## Contribución
+### 4. Renovar Token de Acceso (Refresh Token)
 
-Las contribuciones son bienvenidas. Por favor, abre un issue o un pull request para sugerir cambios o mejoras.
+```go
+func (s *AuthService) RenewToken(ctx context.Context, refreshToken string) (*gooauthrest.JWT, error) {
+	return s.oauthService.RefreshToken(ctx, refreshToken)
+}
+```
 
-## Licencia
+---
 
-Este proyecto está licenciado bajo los términos de la Licencia Pública General GNU, versión 3 (GPLv3).
+## 🤝 Contribución
 
-Resumen de la licencia:
-* Puedes copiar, distribuir y modificar este proyecto siempre que mantengas la misma licencia.
-* Cualquier modificación realizada y distribuida debe estar bajo los mismos términos.
-* No hay garantías sobre el uso del software.
+¡Tus pull requests y reportajes de problemas son bienvenidos! 
+Si tienes alguna idea para mejorar el código o ampliar la documentación, por favor abre un _issue_ o un _pull request_. Para cambios mayores, abre primero un _issue_ para discutir lo que te gustaría cambiar.
 
-Puedes encontrar una copia completa de la licencia en el archivo LICENSE en el repositorio de este proyecto o en [https://www.gnu.org/licenses/gpl-3.0.html](https://www.gnu.org/licenses/gpl-3.0.html).
+---
+
+## 📄 Licencia
+
+Este proyecto está licenciado bajo los términos de la [Licencia Pública General GNU, versión 3 (GPLv3)](https://www.gnu.org/licenses/gpl-3.0.html).
+
+### Resumen Rápido:
+- ✅ Puedes copiar, modificar y usar este componente en todos los entornos que desees.
+- ❗️ Cualquier modificación al código fuente del módulo debe distribuirse bajo la misma licencia.
+- 🚫 Se entrega tal cual como está sin ningún tipo de garantías legales.
+
+<br>
+<p align="center">Construido con ❤️ para ecosistemas distribuidos en <strong>Golang</strong>.</p>
