@@ -11,7 +11,7 @@ import (
 
 func (s *GoOauthService) ValidateTokenIsValidSession(ctx context.Context, tokenStr string) error {
 	token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
+		return []byte(s.secretForJwt), nil
 	})
 	if err != nil || !token.Valid {
 		return gooautherror.InvalidTokenError{}
