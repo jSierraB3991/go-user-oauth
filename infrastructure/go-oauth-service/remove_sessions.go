@@ -3,7 +3,6 @@ package gooauthservice
 import (
 	"context"
 	"log"
-	"time"
 
 	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 )
@@ -44,7 +43,7 @@ func (s *GoOauthService) RemoveSessionById(ctx context.Context, sessionId uint) 
 }
 
 func (s *GoOauthService) RemoveOldSessions(ctx context.Context) {
-	err := s.repo.RemoveSessionsPreDate(ctx, time.Now().AddDate(0, -1, 0))
+	err := s.repo.RemoveSessionsPreDate(ctx)
 	if err != nil {
 		log.Printf("ERROR CLEANING SESSIONS: %s", err.Error())
 	}

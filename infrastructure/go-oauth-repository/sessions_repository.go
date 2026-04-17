@@ -3,7 +3,6 @@ package gooauthrepository
 import (
 	"context"
 	"log"
-	"time"
 
 	gooauthmodel "github.com/jSierraB3991/go-user-oauth/domain/go-oauth-model"
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
@@ -92,7 +91,7 @@ func (repo *Repository) GetDataLoginSessions(ctx context.Context, page *eliotlib
 	return result, nil
 }
 
-func (repo *Repository) RemoveSessionsPreDate(ctx context.Context, limit time.Time) error {
+func (repo *Repository) RemoveSessionsPreDate(ctx context.Context) error {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {
 		return err
@@ -100,7 +99,7 @@ func (repo *Repository) RemoveSessionsPreDate(ctx context.Context, limit time.Ti
 
 	return db.Model(&gooauthmodel.GoUserDataLogin{}).
 		Where("is_available = ?", true).
-		Where("updated_at <= ?", limit).
+		Where("expires_at <= ?", eliotlibs.GetNowColombia()).
 		Update("is_available", false).Error
 }
 
