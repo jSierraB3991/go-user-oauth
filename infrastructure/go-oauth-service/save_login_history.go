@@ -170,6 +170,6 @@ func (s *GoOauthService) updateAndValidateUuidTwoFactor(ctx context.Context, use
 		}
 		return gooautherror.TokenUuidExpiredError{}
 	}
-	sessionId = &userDataLogin.UserDataLoginId
+	*sessionId = userDataLogin.UserDataLoginId
 	return s.repo.UpdateRefreshToken(ctx, userDataLogin.UserDataLoginId, s.hashToken(refreshToken))
 }
