@@ -10,9 +10,10 @@ type GoLoginRequest struct {
 }
 
 type GoLoginRequestTwoFactor struct {
-	UserName      string
-	CodeTwoFactor string
-	Ip            string
-	UserAgent     string
-	IsRemenber    bool
+	UserName          string
+	CodeTwoFactor     string
+	Ip                string
+	UserAgent         string
+	IsRemenber        bool
+	CodeTwoFactorUuid string
 }

@@ -18,7 +18,11 @@ type GoUserDataLogin struct {
 	IsAvailable         bool      `gorm:"column:is_available;not null;default:true"`
 	Fecha               time.Time `gorm:"column:fecha;not null"`
 	ExpiresAt           time.Time `gorm:"column:expires_at;not null"`
-	GoUserUser          GoUserUser
+
+	TokenTwoFactor        *string    `gorm:"column:token_two_factor;default:null"`
+	ExpiredTokenTwoFactor *time.Time `gorm:"column:expired_token_two_factor;default:null"`
+
+	GoUserUser GoUserUser
 }
 
 type GoUserInvalidGoAuth struct {

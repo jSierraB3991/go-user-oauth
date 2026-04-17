@@ -5,6 +5,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/google/uuid"
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
@@ -37,13 +38,19 @@ func (s *GoOauthService) LoginUser(ctx context.Context, req gooauthrequest.GoLog
 	}
 
 	refreshToken := generateRefreshToken()
+	var tokenTwoFactor, tokenTwoFactorEncrypt *string
+	if user.IsActiveTwoFactorOauth {
+		uuidGenerate := uuid.NewString()
+		tokenTwoFactor = &uuidGenerate
 
-	var sessionId uint
-	if s.saveLoginHistory {
-		sessionId, err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, s.hashToken(refreshToken), user.UserId, true)
-		if err != nil {
-			log.Printf("ERROR: SAING DATA LOGIN %v", err)
-		}
+		tokenTwoFactorEncryptL := s.hashToken(uuidGenerate)
+		tokenTwoFactorEncrypt = &tokenTwoFactorEncryptL
+	}
+
+	sessionId, err := s.saveDataLogin(ctx, req.Ip, req.UserAgent, s.hashToken(refreshToken), tokenTwoFactorEncrypt, user.UserId, user.IsActiveTwoFactorOauth)
+	if err != nil {
+		log.Printf("ERROR: SAING DATA LOGIN %v", err)
+		return nil, err
 	}
 
 	tokenString, exp, err := s.GetJwtToken(ctx, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName, sessionId, req.IsRemenber)
@@ -56,7 +63,8 @@ func (s *GoOauthService) LoginUser(ctx context.Context, req gooauthrequest.GoLog
 
 	if user.IsActiveTwoFactorOauth {
 		return &gooauthrest.JWT{
-			IsTwoFactor: true,
+			IsTwoFactor:    true,
+			TokenTwoFactor: tokenTwoFactor,
 		}, nil
 	}
 

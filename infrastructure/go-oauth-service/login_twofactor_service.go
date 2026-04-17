@@ -3,7 +3,6 @@ package gooauthservice
 import (
 	"context"
 	"errors"
-	"log"
 	"strings"
 
 	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
@@ -48,11 +47,10 @@ func (s *GoOauthService) LoginWithTwoFactor(ctx context.Context, req gooauthrequ
 
 	refreshToken := generateRefreshToken()
 	var sessionId uint
-	if s.saveLoginHistory {
-		sessionId, err = s.saveDataLogin(ctx, req.Ip, req.UserAgent, s.hashToken(refreshToken), user.UserId, false)
-		if err != nil {
-			log.Printf("ERROR: SAING DATA LOGIN %v", err)
-		}
+	err = s.updateAndValidateUuidTwoFactor(ctx, user.UserId, &sessionId, req.CodeTwoFactorUuid, refreshToken)
+	if err != nil {
+		s.saveInvalidDataLogin(ctx, req.Ip, req.UserAgent, userName, "Error al crear el token", true)
+		return nil, err
 	}
 
 	tokenString, exp, err := s.GetJwtToken(ctx, user.UserId, user.GoUserRoleId, user.Email, user.GoUserRole.RoleName, sessionId, req.IsRemenber)

@@ -1,9 +1,10 @@
 package gooauthrest
 
 type JWT struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-	ExpiredIn    int    `json:"expired_in"`
-	Role         string `json:"role"`
-	IsTwoFactor  bool   `json:"is_two_factor"`
+	AccessToken    string  `json:"access_token"`
+	RefreshToken   string  `json:"refresh_token"`
+	ExpiredIn      int     `json:"expired_in"`
+	Role           string  `json:"role"`
+	IsTwoFactor    bool    `json:"is_two_factor"`
+	TokenTwoFactor *string `json:"token_two_factor"`
 }
