@@ -23,8 +23,8 @@ func (s *GoOauthService) GenerateQrForDobleOuath(ctx context.Context, userName, 
 	}
 
 	//secretEncrypt, err := eliotlibs.Encrypt(key.Secret(), s.aesKeyForEncrypt)
-	expirationTime := time.Now().Add(s.timeToExpiredQrForOauth * time.Minute).Unix() // Expira en 5 minutos
-	secretData := fmt.Sprintf("%s|%d", key.Secret(), expirationTime)                 // Concatenar secreto + timestamp
+	expirationTime := time.Now().Add(s.timeToExpiredQrForOauth).Unix() // Expira en 5 minutos
+	secretData := fmt.Sprintf("%s|%d", key.Secret(), expirationTime)   // Concatenar secreto + timestamp
 	secretEncrypt, err := eliotlibs.Encrypt(secretData, s.aesKeyForEncrypt)
 
 	if err != nil {

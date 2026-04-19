@@ -18,21 +18,23 @@ type GoOauthService struct {
 	secretForJwt            string
 	aesKeyForEncrypt        string
 	timeToExpiredQrForOauth time.Duration
+	timeToExpiredSession    time.Duration
 	genericPasswordForAdmin string
 	saveLoginHistory        bool
 }
 
 func NewGoOauthService(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
-	timeToExpiredQrForOauth time.Duration, genericPasswordForAdmin string, saveLoginHistory bool) *GoOauthService {
+	timeToExpiredQrForOauth, timeToExpiredSession time.Duration, genericPasswordForAdmin string, saveLoginHistory bool) *GoOauthService {
 	return NewGoOauthServiceWithSchemas(database,
 		secretForJwt,
 		aesKeyForEncrypt,
 		timeToExpiredQrForOauth,
+		timeToExpiredSession,
 		[]string{"public"}, genericPasswordForAdmin, saveLoginHistory)
 }
 
 func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
-	timeToExpiredQrForOauth time.Duration,
+	timeToExpiredQrForOauthInMinutes, timeToExpiredSessionInMinutes time.Duration,
 	schemas []string, genericPasswordForAdmin string, saveLoginHistory bool) *GoOauthService {
 	repo := gooauthrepository.InitiateRepo(database)
 	err := repo.RunMigrations(schemas)
@@ -45,7 +47,8 @@ func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncr
 		passwordService:         NewPasswordService(),
 		secretForJwt:            secretForJwt,
 		aesKeyForEncrypt:        aesKeyForEncrypt,
-		timeToExpiredQrForOauth: timeToExpiredQrForOauth,
+		timeToExpiredQrForOauth: time.Duration(timeToExpiredQrForOauthInMinutes) * time.Minute,
+		timeToExpiredSession:    time.Duration(timeToExpiredSessionInMinutes) * time.Minute,
 		genericPasswordForAdmin: genericPasswordForAdmin,
 		saveLoginHistory:        saveLoginHistory,
 	}
@@ -71,7 +74,7 @@ func (s *GoOauthService) GetJwtToken(ctx context.Context, userId, roleId uint, e
 		gooauthlibs.SESSION_ID:     sessionId,
 	}
 	if !remenber {
-		exp = GetExp()
+		exp = GetExp(s.timeToExpiredSession)
 		claims[gooauthlibs.EXP] = exp
 	}
 
@@ -84,6 +87,6 @@ func (s *GoOauthService) GetJwtToken(ctx context.Context, userId, roleId uint, e
 	return tokenString, exp, nil
 }
 
-func GetExp() int {
-	return int(time.Now().Add(15 * time.Minute).Unix())
+func GetExp(t time.Duration) int {
+	return int(time.Now().Add(t).Unix())
 }
