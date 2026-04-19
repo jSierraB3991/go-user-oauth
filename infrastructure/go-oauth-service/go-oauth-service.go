@@ -2,7 +2,6 @@ package gooauthservice
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -24,7 +23,7 @@ type GoOauthService struct {
 }
 
 func NewGoOauthService(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
-	timeToExpiredQrForOauth, timeToExpiredSession time.Duration, genericPasswordForAdmin string, saveLoginHistory bool) *GoOauthService {
+	timeToExpiredQrForOauth, timeToExpiredSession time.Duration, genericPasswordForAdmin string, saveLoginHistory bool) (*GoOauthService, error) {
 	return NewGoOauthServiceWithSchemas(database,
 		secretForJwt,
 		aesKeyForEncrypt,
@@ -35,11 +34,16 @@ func NewGoOauthService(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
 
 func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
 	timeToExpiredQrForOauthInMinutes, timeToExpiredSessionInMinutes time.Duration,
-	schemas []string, genericPasswordForAdmin string, saveLoginHistory bool) *GoOauthService {
+	schemas []string, genericPasswordForAdmin string, saveLoginHistory bool) (*GoOauthService, error) {
+
+	if timeToExpiredSessionInMinutes > time.Duration(gooauthlibs.MAXIMUM_MINUTES_SESSION)*time.Minute {
+		return nil, gooautherror.InvalidSessionTimeError{TimeMinutes: timeToExpiredSessionInMinutes}
+	}
+
 	repo := gooauthrepository.InitiateRepo(database)
 	err := repo.RunMigrations(schemas)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	return &GoOauthService{
@@ -51,7 +55,7 @@ func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncr
 		timeToExpiredSession:    time.Duration(timeToExpiredSessionInMinutes) * time.Minute,
 		genericPasswordForAdmin: genericPasswordForAdmin,
 		saveLoginHistory:        saveLoginHistory,
-	}
+	}, nil
 }
 func (GoOauthService) ErrorHandler() error {
 	return gooautherror.InactiveTokenError{}

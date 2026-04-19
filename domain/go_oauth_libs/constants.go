@@ -20,4 +20,6 @@ const (
 	IAT        = "iat"
 	EXP        = "exp"
 	SESSION_ID = "session_id"
+
+	MAXIMUM_MINUTES_SESSION = 720
 )
