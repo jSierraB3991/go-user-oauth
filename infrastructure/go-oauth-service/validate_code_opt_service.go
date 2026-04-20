@@ -15,12 +15,14 @@ import (
 
 func (s *GoOauthService) ValidateCodeOtp(ctx context.Context, req gooauthrequest.ValidateOauthCodeRequest) (bool, error) {
 	userName := strings.ToLower(req.Username)
-	code, err := s.repo.GetSecretOauthCode(ctx, userName)
+	user, err := s.repo.GetUserByEmail(ctx, userName)
 	if err != nil {
 		return false, err
 	}
 
-	secretData, err := eliotlibs.Decrypt(*code, s.aesKeyForEncrypt)
+	code := user.KeyOathApp
+
+	secretData, err := eliotlibs.Decrypt(code, s.aesKeyForEncrypt)
 	if err != nil {
 		return false, err
 	}
@@ -42,7 +44,7 @@ func (s *GoOauthService) ValidateCodeOtp(ctx context.Context, req gooauthrequest
 
 	isValidCode := totp.Validate(req.Code, codeDecrypeted)
 
-	if isValidCode {
+	if isValidCode && !user.IsActiveTwoFactorOauth {
 		err = s.repo.ActiveTwoFactorOauth(ctx, userName)
 		if err != nil {
 			return false, err

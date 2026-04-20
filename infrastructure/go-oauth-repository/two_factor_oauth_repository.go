@@ -22,20 +22,6 @@ func (repo *Repository) ActiveTwoFactorOauth(ctx context.Context, userEmail stri
 	return db.Save(&userData).Error
 }
 
-func (repo *Repository) GetSecretOauthCode(ctx context.Context, userEmail string) (*string, error) {
-	db, err := repo.WithTenant(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	var result gooauthmodel.GoUserUser
-	err = db.Where("email = ?", userEmail).Find(&result).Error
-	if err != nil {
-		return nil, err
-	}
-	return &result.KeyOathApp, nil
-}
-
 func (repo *Repository) SaveSecretToUser(ctx context.Context, userEmail, keyOath string) error {
 	db, err := repo.WithTenant(ctx)
 	if err != nil {
