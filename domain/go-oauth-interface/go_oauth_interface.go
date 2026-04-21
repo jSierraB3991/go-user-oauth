@@ -30,6 +30,7 @@ type GoOauthInterface interface {
 
 	GenerateQrForDobleOuath(ctx context.Context, userName, appName, imageUrl string) (*gooauthrest.QrTwoOauthRest, error)
 	ValidateCodeOtp(ctx context.Context, req gooauthrequest.ValidateOauthCodeRequest) (bool, error)
+	ValidateCodeTwoFactor(ctx context.Context, req gooauthrequest.ValidateOauthCodeRequest) (bool, error)
 
 	GeneratetokenToValidate(ctx context.Context, userId, keyToGenerateToken string, limitInHours time.Duration) (*string, error)
 	GenerateValidateMail(ctx context.Context, mailSend, keyToGenerateToken string) (string, error)

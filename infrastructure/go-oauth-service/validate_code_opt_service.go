@@ -53,3 +53,34 @@ func (s *GoOauthService) ValidateCodeOtp(ctx context.Context, req gooauthrequest
 
 	return isValidCode, nil
 }
+
+func (s *GoOauthService) ValidateCodeTwoFactor(ctx context.Context, req gooauthrequest.ValidateOauthCodeRequest) (bool, error) {
+	userName := strings.ToLower(req.Username)
+	user, err := s.repo.GetUserByEmail(ctx, userName)
+	if err != nil {
+		return false, err
+	}
+
+	code := user.KeyOathApp
+
+	secretData, err := eliotlibs.Decrypt(code, s.aesKeyForEncrypt)
+	if err != nil {
+		return false, err
+	}
+
+	parts := strings.Split(secretData, "|")
+	if len(parts) != 2 {
+		return false, errors.New("invalid secret format")
+	}
+
+	isValidCode := totp.Validate(req.Code, parts[0])
+
+	if isValidCode && !user.IsActiveTwoFactorOauth {
+		err = s.repo.ActiveTwoFactorOauth(ctx, userName)
+		if err != nil {
+			return false, err
+		}
+	}
+
+	return isValidCode, nil
+}
