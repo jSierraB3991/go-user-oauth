@@ -61,26 +61,20 @@ func (s *GoOauthService) ValidateCodeTwoFactor(ctx context.Context, req gooauthr
 		return false, err
 	}
 
-	code := user.KeyOathApp
+	return validateInterCode(req.Code, user.KeyOathApp, s.aesKeyForEncrypt), nil
+}
 
-	secretData, err := eliotlibs.Decrypt(code, s.aesKeyForEncrypt)
+func validateInterCode(reqCode, userKeyOauth, aesKey string) bool {
+
+	secretData, err := eliotlibs.Decrypt(userKeyOauth, aesKey)
 	if err != nil {
-		return false, err
+		return false
 	}
 
 	parts := strings.Split(secretData, "|")
 	if len(parts) != 2 {
-		return false, errors.New("invalid secret format")
+		return false
 	}
 
-	isValidCode := totp.Validate(req.Code, parts[0])
-
-	if isValidCode && !user.IsActiveTwoFactorOauth {
-		err = s.repo.ActiveTwoFactorOauth(ctx, userName)
-		if err != nil {
-			return false, err
-		}
-	}
-
-	return isValidCode, nil
+	return totp.Validate(reqCode, parts[0])
 }
