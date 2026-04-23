@@ -14,6 +14,10 @@ import (
 
 func (repo *Repository) RunMigrations(schemas []string) error {
 
+	if repo.db == nil {
+		return nil
+	}
+
 	for _, schema := range schemas {
 		// Asegúrate de que el schema existe antes de migrar
 		if err := ensureSchemaExists(repo.db, schema); err != nil {
