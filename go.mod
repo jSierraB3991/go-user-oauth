@@ -6,7 +6,7 @@ require (
 	github.com/casbin/casbin/v3 v3.10.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
-	github.com/jSierraB3991/jsierra-libs v0.8.7
+	github.com/jSierraB3991/jsierra-libs v0.9.3
 	github.com/pquerna/otp v1.5.0
 	golang.org/x/crypto v0.50.0
 	gorm.io/gorm v1.31.1

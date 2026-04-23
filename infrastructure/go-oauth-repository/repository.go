@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	gooautherror "github.com/jSierraB3991/go-user-oauth/domain/go_oauth_error"
 	eliotlibs "github.com/jSierraB3991/jsierra-libs"
 	"gorm.io/gorm"
 )
@@ -25,7 +24,7 @@ func (repo *Repository) WithTenant(ctx context.Context) (*gorm.DB, error) {
 		return repo.db, nil
 	}
 	if repo.db == nil {
-		return nil, gooautherror.NotDatabaseConfigurateError{}
+		return nil, eliotlibs.NotDatabaseConfigurateError{}
 	}
 
 	tx := repo.db.Session(&gorm.Session{
