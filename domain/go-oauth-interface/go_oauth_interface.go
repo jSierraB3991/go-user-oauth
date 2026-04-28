@@ -8,6 +8,7 @@ import (
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
 	gooauthrest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-rest"
 	eliotlibs "github.com/jSierraB3991/jsierra-libs"
+	"gorm.io/gorm"
 )
 
 type GoOauthInterface interface {
@@ -58,4 +59,6 @@ type GoOauthInterface interface {
 
 	ValidateTokenIsValidSession(ctx context.Context, tokenStr string) error
 	RefreshToken(ctx context.Context, refreshToken string) (*gooauthrest.JWT, error)
+
+	RefreshDatabase(db *gorm.DB)
 }

@@ -18,6 +18,11 @@ func InitiateRepo(db *gorm.DB) *Repository {
 		db: db,
 	}
 }
+
+func (repo *Repository) SetDb(db *gorm.DB) {
+	repo.db = db
+}
+
 func (repo *Repository) WithTenant(ctx context.Context) (*gorm.DB, error) {
 	tenant, err := eliotlibs.WithTenant(ctx)
 	if err != nil {

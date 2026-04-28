@@ -20,6 +20,7 @@ type GoOauthService struct {
 	timeToExpiredSession    time.Duration
 	genericPasswordForAdmin string
 	saveLoginHistory        bool
+	schemas                 []string
 }
 
 func NewGoOauthService(database *gorm.DB, secretForJwt, aesKeyForEncrypt string,
@@ -55,6 +56,7 @@ func NewGoOauthServiceWithSchemas(database *gorm.DB, secretForJwt, aesKeyForEncr
 		timeToExpiredSession:    time.Duration(timeToExpiredSessionInMinutes) * time.Minute,
 		genericPasswordForAdmin: genericPasswordForAdmin,
 		saveLoginHistory:        saveLoginHistory,
+		schemas:                 schemas,
 	}, nil
 }
 func (GoOauthService) ErrorHandler() error {
@@ -93,4 +95,9 @@ func (s *GoOauthService) GetJwtToken(ctx context.Context, userId, roleId uint, e
 
 func GetExp(t time.Duration) int {
 	return int(time.Now().Add(t).Unix())
+}
+
+func (s *GoOauthService) RefreshDatabase(db *gorm.DB) {
+	s.repo.SetDb(db)
+	s.repo.RunMigrations(s.schemas)
 }
