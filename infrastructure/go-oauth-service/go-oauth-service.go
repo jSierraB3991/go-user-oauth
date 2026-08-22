@@ -2,6 +2,7 @@ package gooauthservice
 
 import (
 	"context"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -99,5 +100,9 @@ func GetExp(t time.Duration) int {
 
 func (s *GoOauthService) RefreshDatabase(db *gorm.DB) {
 	s.repo.SetDb(db)
-	s.repo.RunMigrations(s.schemas)
+	err := s.repo.RunMigrations(s.schemas)
+	if err != nil {
+		log.Println("ERROR RUN MIGRATIONS WHEN REFRESH DATABASE")
+		log.Println(err)
+	}
 }

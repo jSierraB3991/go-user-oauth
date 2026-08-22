@@ -3,8 +3,8 @@ package gooauthlibs
 const (
 	HeaderAuthorization = "Authorization"
 
-	ROLE_ADMIN = "ROLE_ADMIN"
-	ROLE_USER  = "ROLE_USER"
+	ROLE_ADMIN = "ROLE_ADMIN" // GOOD MODE
+	ROLE_USER  = "ROLE_USER"  //ADMINISTRADORES DEL SISTEMA
 
 	ALONE_BEARER_HEADER  = "Bearer"
 	BEARER_HEADER_PREFIX = "Bearer "

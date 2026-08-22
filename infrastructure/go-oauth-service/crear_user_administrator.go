@@ -32,7 +32,7 @@ func (s *GoOauthService) CreateUserAdministrator(ctx context.Context, userEmail,
 		Emailverify: true,
 	}
 
-	userId, err := s.CreateUser(ctx, kUser, gooauthlibs.ROLE_ADMIN, attributes)
+	userId, err := s.CreateUser(ctx, kUser, gooauthlibs.ROLE_USER, attributes)
 	if err != nil {
 		return "", err
 	}

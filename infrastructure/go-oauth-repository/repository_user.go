@@ -193,7 +193,7 @@ func (repo *Repository) ExistsUserAdministrator(ctx context.Context) (bool, erro
 		return false, err
 	}
 
-	roleAdministrator, err := repo.GetRoleByName(ctx, gooauthlibs.ROLE_ADMIN)
+	roleAdministrator, err := repo.GetRoleByName(ctx, gooauthlibs.ROLE_USER)
 	if err != nil {
 		return false, err
 	}

@@ -2,7 +2,6 @@ package gooauthinterface
 
 import (
 	"context"
-	"net/http"
 	"time"
 
 	gooauthrequest "github.com/jSierraB3991/go-user-oauth/infrastructure/go-oauth-request"
@@ -12,7 +11,6 @@ import (
 )
 
 type GoOauthInterface interface {
-	CheckoutMiddleware(requets *http.Request) bool
 	GetSecretByClient(ctx context.Context) error
 	CreateUser(ctx context.Context, userParam gooauthrequest.CreateUser, roleUser string, attributes *map[string][]string) (string, error)
 	UpdateUser(ctx context.Context, keyCloakUserId string, attributes *map[string][]string, req gooauthrequest.UpdateUserRequest) error
