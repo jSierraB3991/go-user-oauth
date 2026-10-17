@@ -3,7 +3,7 @@ module github.com/jSierraB3991/go-user-oauth
 go 1.26.0
 
 require (
-	github.com/casbin/casbin/v3 v3.11.0
+	github.com/casbin/casbin/v3 v3.9.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
 	github.com/jSierraB3991/jsierra-libs v1.0.0
